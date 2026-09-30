@@ -1,0 +1,1 @@
+"""Knowledge document API models."""
