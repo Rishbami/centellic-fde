@@ -5,3 +5,10 @@ from models import Account
 
 
 router = APIRouter(prefix="/accounts", tags=["accounts"])
+
+
+def get_account_or_404(account_id: str) -> dict:
+    for account in ACCOUNTS:
+        if account["account_id"] == account_id:
+            return account
+    raise HTTPException(status_code=404, detail="Account not found")
