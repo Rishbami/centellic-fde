@@ -511,7 +511,7 @@ ALERTS: list[dict[str, Any]] = [
     ),
     _alert(
         "ALT-052", "ACC-024", "ANL-004", 148000.00, "GB->IN",
-        "new_counterparty", 81, "awaiting_information", "Pune Cloud Technologies", "2026-09-28T09:21:00Z", None,
+        "new_counterparty", 81, "under_review", "Pune Cloud Technologies", "2026-09-28T09:21:00Z", None,
     ),
     _alert(
         "ALT-053", "ACC-025", None, 4950.00, "GB->IN",
@@ -527,7 +527,7 @@ ALERTS: list[dict[str, Any]] = [
     ),
     _alert(
         "ALT-056", "ACC-015", "ANL-006", 82000.00, "GB->UG",
-        "high_risk_corridor", 79, "awaiting_information", "Kampala Water Initiative", "2026-09-29T10:19:00Z", None,
+        "high_risk_corridor", 79, "under_review", "Kampala Water Initiative", "2026-09-29T10:19:00Z", None,
     ),
     _alert(
         "ALT-057", "ACC-027", None, 925.00, "GB->GB",
