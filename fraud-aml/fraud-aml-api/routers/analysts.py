@@ -55,3 +55,11 @@ def update_analyst(
 ):
     analyst.update(updated.model_dump())
     return analyst
+
+
+@router.delete("/{analyst_id}")
+def delete_analyst(
+    analyst: dict = Depends(get_analyst_or_404),
+):
+    ANALYSTS.remove(analyst)
+    return analyst
