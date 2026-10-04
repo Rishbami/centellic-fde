@@ -12,3 +12,13 @@ def get_alert_or_404(alert_id: str) -> dict:
         if alert["alert_id"] == alert_id:
             return alert
     raise HTTPException(status_code=404, detail="Alert not found")
+
+
+@router.get("")
+def list_alerts():
+    return ALERTS
+
+
+@router.get("/{alert_id}")
+def get_alert(alert: dict = Depends(get_alert_or_404)):
+    return alert
