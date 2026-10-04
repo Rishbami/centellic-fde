@@ -46,3 +46,12 @@ def add_analyst(new: NewAnalyst):
 
     ANALYSTS.append(analyst)
     return analyst
+
+
+@router.put("/{analyst_id}")
+def update_analyst(
+    updated: NewAnalyst,
+    analyst: dict = Depends(get_analyst_or_404),
+):
+    analyst.update(updated.model_dump())
+    return analyst
