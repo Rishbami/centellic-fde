@@ -60,3 +60,12 @@ def add_alert(new: NewAlert):
 
     ALERTS.append(alert)
     return alert
+
+
+@router.put("/{alert_id}")
+def update_alert(
+    updated: NewAlert,
+    alert: dict = Depends(get_alert_or_404),
+):
+    alert.update(updated.model_dump())
+    return alert
