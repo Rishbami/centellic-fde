@@ -33,3 +33,24 @@ SYSTEM_PROMPT = (
     "Write two short paragraphs: first summarise the alert and account; "
     "then explain what is flagged and what context is missing."
 )
+
+
+def build_prompt(alert: dict, account: dict) -> str:
+    return (
+        "Summarise this fraud/AML alert in two short paragraphs.\n"
+        "First describe the alert and linked account. "
+        "Then explain what is flagged and what context is missing.\n\n"
+        f"Alert ID: {alert['alert_id']}\n"
+        f"Amount (currency not provided): {alert['amount']}\n"
+        f"Payment corridor: {alert['corridor']}\n"
+        f"Rule triggered: {alert['rule_triggered']}\n"
+        f"Risk score: {alert['risk_score']}\n"
+        f"Counterparty: {alert['counterparty']}\n"
+        f"Alert status: {alert['status']}\n"
+        f"Created at: {alert['created_at']}\n\n"
+        f"Account ID: {account['account_id']}\n"
+        f"Account holder: {account['account_holder_name']}\n"
+        f"Account country: {account['country']}\n"
+        f"Account balance (currency not provided): {account['balance']}\n"
+        f"Account status: {account['status']}\n"
+    )
