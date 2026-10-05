@@ -57,3 +57,11 @@ def update_account(
 ):
     account.update(updated.model_dump())
     return account
+
+
+@router.delete("/{account_id}")
+def delete_account(
+    account: dict = Depends(get_account_or_404),
+):
+    ACCOUNTS.remove(account)
+    return account
