@@ -48,3 +48,12 @@ def add_account(new: NewAccount):
 
     ACCOUNTS.append(account)
     return account
+
+
+@router.put("/{account_id}")
+def update_account(
+    updated: NewAccount,
+    account: dict = Depends(get_account_or_404),
+):
+    account.update(updated.model_dump())
+    return account
