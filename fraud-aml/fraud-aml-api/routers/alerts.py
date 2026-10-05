@@ -69,3 +69,11 @@ def update_alert(
 ):
     alert.update(updated.model_dump())
     return alert
+
+
+@router.delete("/{alert_id}")
+def delete_alert(
+    alert: dict = Depends(get_alert_or_404),
+):
+    ALERTS.remove(alert)
+    return alert
