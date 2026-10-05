@@ -15,3 +15,22 @@ from routers.accounts import get_account_or_404
 from routers.alerts import get_alert_or_404
 
 router = APIRouter(prefix="/alerts", tags=["insights"])
+
+
+def get_alert_context(
+    alert: dict = Depends(get_alert_or_404),
+) -> tuple[dict, dict]:
+    account = get_account_or_404(alert["account_id"])
+    return alert, account
+
+
+@contextmanager
+def handle_llm_errors():
+    try:
+        yield
+    except RateLimitError as exc:
+        raise HTTPException(status_code=429, detail="LLM rate limit exceeded") from exc
+    except APITimeoutError as exc:
+        raise HTTPException(status_code=504, detail="LLM request timed out") from exc
+    except (APIConnectionError, APIStatusError) as exc:
+        raise HTTPException(status_code=502, detail="LLM provider unavailable") from exc
