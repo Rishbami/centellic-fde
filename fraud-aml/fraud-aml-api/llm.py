@@ -80,3 +80,13 @@ def estimate_input_tokens(alert: dict, account: dict) -> int:
         messages=[{"role": "user", "content": build_prompt(alert, account)}],
     )
     return response.input_tokens
+
+
+def stream_alert_summary(alert: dict, account: dict):
+    with client.messages.stream(
+        model=MODEL,
+        max_tokens=500,
+        system=SYSTEM_PROMPT,
+        messages=[{"role": "user", "content": build_prompt(alert, account)}],
+    ) as stream:
+        yield from stream.text_stream
