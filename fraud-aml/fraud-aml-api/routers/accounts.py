@@ -9,8 +9,9 @@ router = APIRouter(prefix="/accounts", tags=["accounts"])
 
 
 class NewAccount(BaseModel):
-    name: str = Field(min_length=1)
-    email: str = Field(min_length=1)
+    account_holder_name: str = Field(min_length=1)
+    balance: float = Field(ge=0)
+    country: str = Field(pattern=r"^[A-Z]{2}$")
     status: AccountStatus
 
 
@@ -28,4 +29,22 @@ def list_accounts():
 
 @router.get("/{account_id}")
 def get_account(account: dict = Depends(get_account_or_404)):
+    return account
+
+
+@router.post("", status_code=201)
+def add_account(new: NewAccount):
+    new_number = (
+        max(int(account["account_id"].split("-")[1]) for account in ACCOUNTS) + 1
+    )
+
+    account = {
+        "account_id": f"ACC-{new_number:03d}",
+        "account_holder_name": new.account_holder_name,
+        "balance": new.balance,
+        "country": new.country,
+        "status": new.status,
+    }
+
+    ACCOUNTS.append(account)
     return account
