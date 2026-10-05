@@ -54,3 +54,20 @@ def build_prompt(alert: dict, account: dict) -> str:
         f"Account balance (currency not provided): {account['balance']}\n"
         f"Account status: {account['status']}\n"
     )
+
+
+def summarise_alert(alert: dict, account: dict) -> dict:
+    response = client.messages.create(
+        model=MODEL,
+        max_tokens=500,
+        system=SYSTEM_PROMPT,
+        messages=[{"role": "user", "content": build_prompt(alert, account)}],
+    )
+    return {
+        "alert_id": alert["alert_id"],
+        "account_id": account["account_id"],
+        "summary": response.content[0].text,
+        "input_tokens": response.usage.input_tokens,
+        "output_tokens": response.usage.output_tokens,
+        "stop_reason": response.stop_reason,
+    }
