@@ -38,3 +38,25 @@ def list_alerts():
 @router.get("/{alert_id}")
 def get_alert(alert: dict = Depends(get_alert_or_404)):
     return alert
+
+
+@router.post("", status_code=201)
+def add_alert(new: NewAlert):
+    new_number = max(int(alert["alert_id"].split("-")[1]) for alert in ALERTS) + 1
+
+    alert = {
+        "alert_id": f"ALERT-{new_number:03d}",
+        "account_id": new.account_id,
+        "analyst_id": new.analyst_id,
+        "amount": new.amount,
+        "corridor": new.corridor,
+        "rule_triggered": new.rule_triggered,
+        "risk_score": new.risk_score,
+        "status": new.status,
+        "counterparty": new.counterparty,
+        "created_at": new.created_at,
+        "review_outcome": new.review_outcome,
+    }
+
+    ALERTS.append(alert)
+    return alert
