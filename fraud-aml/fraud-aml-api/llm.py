@@ -71,3 +71,12 @@ def summarise_alert(alert: dict, account: dict) -> dict:
         "output_tokens": response.usage.output_tokens,
         "stop_reason": response.stop_reason,
     }
+
+
+def estimate_input_tokens(alert: dict, account: dict) -> int:
+    response = client.messages.count_tokens(
+        model=MODEL,
+        system=SYSTEM_PROMPT,
+        messages=[{"role": "user", "content": build_prompt(alert, account)}],
+    )
+    return response.input_tokens
