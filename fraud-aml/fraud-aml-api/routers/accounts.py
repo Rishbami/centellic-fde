@@ -1,10 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, Field
 
 from data import ACCOUNTS
-from models import Account
+from models.account import AccountStatus
 
 
 router = APIRouter(prefix="/accounts", tags=["accounts"])
+
+
+class NewAccount(BaseModel):
+    name: str = Field(min_length=1)
+    email: str = Field(min_length=1)
+    status: AccountStatus
 
 
 def get_account_or_404(account_id: str) -> dict:
