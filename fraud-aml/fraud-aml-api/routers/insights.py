@@ -34,3 +34,12 @@ def handle_llm_errors():
         raise HTTPException(status_code=504, detail="LLM request timed out") from exc
     except (APIConnectionError, APIStatusError) as exc:
         raise HTTPException(status_code=502, detail="LLM provider unavailable") from exc
+
+
+@router.post("/{alert_id}/summary")
+def summarise_alert(
+    context: tuple[dict, dict] = Depends(get_alert_context),
+):
+    alert, account = context
+    with handle_llm_errors():
+        return llm.summarise_alert(alert, account)
