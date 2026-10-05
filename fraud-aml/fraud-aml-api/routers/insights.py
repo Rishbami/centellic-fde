@@ -56,3 +56,14 @@ def estimate_summary(
             "estimated_input_tokens": llm.estimate_input_tokens(alert, account),
             "model": llm.MODEL,
         }
+
+
+@router.get("/{alert_id}/summary/stream")
+def stream_summary(
+    context: tuple[dict, dict] = Depends(get_alert_context),
+):
+    alert, account = context
+    return StreamingResponse(
+        llm.stream_alert_summary(alert, account),
+        media_type="text/plain",
+    )
