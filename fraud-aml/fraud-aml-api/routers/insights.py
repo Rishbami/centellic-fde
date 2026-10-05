@@ -43,3 +43,16 @@ def summarise_alert(
     alert, account = context
     with handle_llm_errors():
         return llm.summarise_alert(alert, account)
+
+
+@router.get("/{alert_id}/summary/estimate")
+def estimate_summary(
+    context: tuple[dict, dict] = Depends(get_alert_context),
+):
+    alert, account = context
+    with handle_llm_errors():
+        return {
+            "alert_id": alert["alert_id"],
+            "estimated_input_tokens": llm.estimate_input_tokens(alert, account),
+            "model": llm.MODEL,
+        }
