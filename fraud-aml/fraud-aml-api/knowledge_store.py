@@ -13,6 +13,10 @@ collection = chroma.get_or_create_collection(
 )
 
 
+def count() -> int:
+    return collection.count()
+
+
 def build_index() -> int:
     """Embed every document and hand the vectors to Chroma."""
     texts = [doc["content"] for doc in DOCUMENTS]
