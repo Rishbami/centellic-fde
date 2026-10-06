@@ -100,3 +100,24 @@ GROUNDED_SYSTEM_PROMPT = (
     "Never use knowledge from outside the context. Use British English. "
     "No em dash characters."
 )
+
+
+def answer_from_context(question: str, context: str) -> dict:
+    """Answer strictly from retrieval context... The G in RAG"""
+    response = client.messages.create(
+        model=MODEL,
+        max_tokens=500,
+        system=GROUNDED_SYSTEM_PROMPT,
+        messages=[
+            {
+                "role": "user",
+                "content": f"Context: \n\n{context}\n\nQuestion: {question}",
+            }
+        ],
+    )
+    return {
+        "answer": response.content[0].text,
+        "input_tokens": response.usage.input_tokens,
+        "output_tokens": response.usage.output_tokens,
+        "stop_reason": response.stop_reason,
+    }
