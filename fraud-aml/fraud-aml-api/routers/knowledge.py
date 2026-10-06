@@ -3,9 +3,15 @@ from pydantic import BaseModel, Field
 from anthropic import APIStatusError, APITimeoutError, RateLimitError
 import knowledge_store as knowledge
 import llm
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 router = APIRouter(prefix="/knowledge", tags=["knowledge"])
+
+RELEVANCE_FLOOR = os.getenv("RELEVANCE_FLOOR")
 
 
 # Create class (question) using base model w 2 field (quesstion and top_k)
