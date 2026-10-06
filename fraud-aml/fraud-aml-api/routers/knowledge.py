@@ -19,3 +19,15 @@ def rebuild_index():
     """Embed the corpus. Costs tokens... so it is deliberate POST, rather than automatic."""
     tokens = knowledge.build_index()
     return {"indexed": knowledge.count(), "embedding_tokens": tokens}
+
+
+@router.post("/search")
+def search(q: Question):
+    """Retrieval only... no model call or generated text etc... only what was found"""
+    try:
+        return {
+            "question": q.question,
+            "results": knowledge.search(q.question, q.top_k),
+        }
+    except RuntimeError as e:
+        raise HTTPException(status_code=409, detail=str(e))
