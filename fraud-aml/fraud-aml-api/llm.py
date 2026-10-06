@@ -90,3 +90,13 @@ def stream_alert_summary(alert: dict, account: dict):
         messages=[{"role": "user", "content": build_prompt(alert, account)}],
     ) as stream:
         yield from stream.text_stream
+
+
+GROUNDED_SYSTEM_PROMPT = (
+    "You assist a fraud and AML analyst. Answer using ONLY the context provided. "
+    "Cite the document id in square brackets after each claim, like [doc-001]. "
+    "If the context does not contain the answer, say exactly: "
+    "'The provided documents do not answer that question.' "
+    "Never use knowledge from outside the context. Use British English. "
+    "No em dash characters."
+)
