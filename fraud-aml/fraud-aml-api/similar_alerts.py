@@ -12,7 +12,7 @@ def get_reviewed_alerts():
 
 
 # Find reviewed alerts that triggered same rule as current alerts
-def find_similar_alerts(current_alert):
+def find_similar_alerts(current_alert, limit=5):
     similar_alerts = []
 
     for alert in get_reviewed_alerts():
@@ -23,7 +23,25 @@ def find_similar_alerts(current_alert):
             similar_alerts.append(alert)
 
     similar_alerts.sort(
-        key=lambda alert: abs(alert["amount"] - current_alert["amount"])
+        key=lambda alert: (
+            alert["corridor"] != current_alert["corridor"],
+            abs(alert["amount"] - current_alert["amount"]),
+        )
     )
 
-    return similar_alerts
+    results = []
+
+    for alert in similar_alerts[:limit]:
+        results.append(
+            {
+                "alert_id": alert["alert_id"],
+                "rule_triggered": alert["rule_triggered"],
+                "corridor": alert["corridor"],
+                "amount": alert["amount"],
+                "review_outcome": alert["review_outcome"],
+                "same_corridor": alert["corridor"] == current_alert["corridor"],
+                "amount_difference": abs(alert["amount"] - current_alert["amount"]),
+            }
+        )
+
+    return results
