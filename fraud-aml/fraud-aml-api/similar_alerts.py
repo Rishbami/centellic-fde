@@ -22,4 +22,8 @@ def find_similar_alerts(current_alert):
         if alert["rule_triggered"] == current_alert["rule_triggered"]:
             similar_alerts.append(alert)
 
+    similar_alerts.sort(
+        key=lambda alert: abs(alert["amount"] - current_alert["amount"])
+    )
+
     return similar_alerts
