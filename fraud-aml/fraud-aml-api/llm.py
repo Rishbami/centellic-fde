@@ -12,6 +12,8 @@ from anthropic import (
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
+from similar_alerts import find_similar_alerts
+
 load_dotenv()
 
 MODEL = os.getenv("ANTHROPIC_MODEL")
