@@ -89,3 +89,19 @@ A pair that finishes strong can say something like:
 
 That's the handover. Not a list of complaints — a ranked judgement, with evidence, and an
 honest line between what you fixed and what you'd need permission for.
+
+
+is chunking worth it - yes as sections contexual improves MRR from 0.845 (whole document) to 0.931 
+what did blind splitting cost? - Fixed 100 drops recall@3 to 0.793, misses 6 questions.
+what did the prefix buy
+| Metric | Plain | Contextual |
+|---|---:|---:|
+| Heading-dependent Recall@3 | 0.50 | 1.00 |
+| Title-dependent Recall@3 | 0.75 | 1.00 |
+| MRR | 0.540 | 0.931 |
+| Context words | 186 | 197 |
+
+
+which questions fail everywhere. None 
+
+can a score floor seperate answerable from unanswerable? the averages differ: 0.660 versus 0.496 for sections contextual. But these columns are means, so they cannot establish whether individual score overlap.

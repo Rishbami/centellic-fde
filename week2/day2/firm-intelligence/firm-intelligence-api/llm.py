@@ -15,9 +15,9 @@ from anthropic import (
 
 from pydantic import BaseModel, Field
 
+import grounding
+
 MODEL = "claude-haiku-4-5-20251001"
-INPUT_COST_PER_MILLION = 1.00
-OUTPUT_COST_PER_MILLION = 5.00
 
 logger = logging.getLogger(__name__)
 
@@ -50,41 +50,6 @@ def build_prompt(firm: dict) -> str:
         f"Lawyers: {firm['lawyers']}\n"
         f"Equity Partners: {firm['equity_partners']}\n"
     )
-
-
-# def call_with_retry(firm: dict, max_attempts: int = 3):
-#     """Call Anthropic with exponential backoff and log the successful call's cost."""
-#     retryable_errors = (
-#         APIConnectionError,
-#         APITimeoutError,
-#         InternalServerError,
-#         RateLimitError,
-#     )
-
-#     for attempt in range(max_attempts):
-#         try:
-#             response = client.with_options(max_retries=0).messages.create(
-#                 model=MODEL,
-#                 max_tokens=400,
-#                 system=SYSTEM_PROMPT,
-#                 messages=[{"role": "user", "content": build_prompt(firm)}],
-#             )
-#             cost_usd = (
-#                 response.usage.input_tokens * INPUT_COST_PER_MILLION
-#                 + response.usage.output_tokens * OUTPUT_COST_PER_MILLION
-#             ) / 1_000_000
-#             logger.info("Anthropic call cost: $%.6f", cost_usd)
-#             return response
-#         except retryable_errors:
-#             if attempt == max_attempts - 1:
-#                 raise
-
-#             delay_seconds = 2**attempt
-#             logger.warning(
-#                 "Anthropic call failed; retrying in %s seconds",
-#                 delay_seconds,
-#             )
-#             time.sleep(delay_seconds)
 
 
 # The call
@@ -172,10 +137,9 @@ def analyse_firm(firm: dict) -> dict:
 # Rtrieval finds documents... RAG's third letter is generate - turn the
 
 GROUNDED_SYSTEM_PROMPT = (
-    "Your are a legal marke analyst. Answer using ONLY the context provided. "
+    "Your are a legal market analyst. Answer using ONLY the context provided. "
     "Cite the document id in square brackets after each claim, like [doc-001]. "
-    "If the context does not contain the answer, say exactly: "
-    "'The provided documents do not answer that question.' "
+    f"If the context does not contain the answer, say exactly: '{grounding.REFUSAL_SENTENCE}'. "
     "Never use knowledge from outside the context. Use British English. No em dash characters."
 )
 
@@ -183,12 +147,14 @@ GROUNDED_SYSTEM_PROMPT = (
 # Notice where the context goes...
 # rules in system
 # data n user
-def answer_from_context(question: str, context: str) -> dict:
+def answer_from_context(
+    question: str, context: str, system: str = GROUNDED_SYSTEM_PROMPT
+) -> dict:
     """Answer strictly from retrieval context... The G in RAG"""
     response = client.messages.create(
         model=MODEL,
         max_tokens=500,
-        system=GROUNDED_SYSTEM_PROMPT,
+        system=system,
         messages=[
             {
                 "role": "user",

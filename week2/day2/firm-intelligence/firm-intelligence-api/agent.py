@@ -90,6 +90,15 @@ def ask_with_tools(question: str) -> dict:
 
         messages.append({"role": "user", "content": tool_results})
 
+    return {
+        "answer": "Agent stopped after reaching the maximum number of iterations.",
+        "completed": False,
+        "tool_calls_made": tool_calls_made,
+        "input_tokens": total_input_tokens,
+        "output_tokens": total_output_tokens,
+        "stop_reason": "max_iterations",
+    }
+
 
 def execute_tool(name: str, tool_input: dict) -> tuple[str, bool]:
     """Run the requested tool. Returns (result_text, is_error)"""

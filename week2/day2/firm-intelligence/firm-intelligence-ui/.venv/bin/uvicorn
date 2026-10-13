@@ -1,4 +1,4 @@
-#!/Users/rishiram/centellic-FDE/week2/day2/firm-intelligence-ui/.venv/bin/python3.12
+#!/Users/rishiram/centellic-FDE/week2/day2/firm-intelligence/firm-intelligence-ui/.venv/bin/python
 import sys
 from uvicorn.main import main
 if __name__ == '__main__':

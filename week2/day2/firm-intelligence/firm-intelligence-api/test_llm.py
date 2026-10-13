@@ -39,7 +39,7 @@ def test_provider_timeout_becomes_504(monkeypatch):
 
 # check that our estimate does not call the model
 def test_estimate_does_not_call_the_model(monkeypatch):
-    monkeypatch.setattr(llm, "estimate_input_token", lambda firm: 137)
+    monkeypatch.setattr(llm, "estimate_input_tokens", lambda firm: 137)
     response = client.get("/firms/1/summary/estimate")
 
     # assertions
@@ -49,7 +49,7 @@ def test_estimate_does_not_call_the_model(monkeypatch):
 
 def test_stream_yields_chunk(monkeypatch):
     monkeypatch.setattr(
-        llm, "stream_firm_summary", lambda firm: iter(["Hard", " ing", "& Voss"])
+        llm, "stream_firm_summary", lambda firm: iter(["Hard", "ing", " & Voss"])
     )
     with client.stream("GET", "/firms/1/summary/stream") as response:
         assert response.status_code == 200
