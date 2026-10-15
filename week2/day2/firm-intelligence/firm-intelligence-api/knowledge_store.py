@@ -3,13 +3,16 @@
 
 import knowledge
 import chunk_index
+import hybrid
 
 # out chose strategy
-CHUNK_STRATEGY = "sections_contexual"
+CHUNK_STRATEGY = "sections_contextual"
+
+SEARCH_MODE = "hybrid"
 
 
 def count() -> int:
-    return chunk_index.collection_for(CHUNK_STRATEGY)
+    return chunk_index.collection_for(CHUNK_STRATEGY).count()
 
 
 def build_index() -> int:
@@ -22,5 +25,9 @@ def search(question: str, top_k: int = 3) -> list[dict]:
     if count() == 0:
         raise RuntimeError("Index is empty, call POST /knowedlge/ask/index first")
     query_vectors, _ = knowledge.embed_texts([question], input_type="query")
+    if SEARCH_MODE == "hybrid":
+        return hybrid.search_with_vector(
+            CHUNK_STRATEGY, question, query_vectors[0], top_k
+        )
 
     return chunk_index.search_with_vectors(CHUNK_STRATEGY, query_vectors, k=top_k)[0]
