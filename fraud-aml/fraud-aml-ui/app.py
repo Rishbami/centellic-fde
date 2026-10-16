@@ -133,6 +133,66 @@ def render_queue(analyst_id, analysts):
         ])
 
 
+def render_search():
+    if "guidance_question" not in st.session_state:
+        st.session_state.guidance_question = st.session_state.get("last_search_question", "")
+
+    with st.form("guidance_search"):
+        question = st.text_input("Question", key="guidance_question")
+        submitted = st.form_submit_button("Search", icon=":material/search:")
+
+    if submitted:
+        question = question.strip()
+        st.session_state.last_search_question = question
+        st.session_state.pop("guidance_results", None)
+        st.session_state.pop("guidance_feedback", None)
+
+        if not question:
+            st.session_state.guidance_feedback = ("warning", "Enter a question to search.")
+        else:
+            try:
+                with st.spinner("Searching guidance..."):
+                    result = request_json(
+                        "POST",
+                        "/knowledge/search",
+                        json={"question": question, "top_k": 3},
+                    )
+                st.session_state.guidance_results = {
+                    "question": question,
+                    "results": result["results"],
+                }
+            except APIError as exc:
+                if exc.status_code == 409:
+                    st.session_state.guidance_feedback = (
+                        "warning", "Guidance index has not been built."
+                    )
+                else:
+                    st.session_state.guidance_feedback = ("error", str(exc))
+
+    feedback = st.session_state.get("guidance_feedback")
+    if feedback:
+        level, message = feedback
+        if level == "warning":
+            st.warning(message)
+        else:
+            st.error(message)
+
+    saved = st.session_state.get("guidance_results")
+    if saved is None:
+        return
+
+    st.caption(f"Results for: {saved['question']}")
+    if not saved["results"]:
+        st.info("No guidance found.")
+        return
+
+    for hit in saved["results"]:
+        st.subheader(hit["title"])
+        st.caption(f"{hit['id']} | Score: {hit['score']:.3f}")
+        st.write(hit["text"])
+        st.divider()
+
+
 def main():
     st.set_page_config(page_title="Fraud AML", layout="wide")
     st.sidebar.title("Fraud AML")
@@ -192,6 +252,8 @@ def main():
 
     if view == "Alert Queue":
         render_queue(analyst_id, analysts)
+    elif view == "Search Guidance":
+        render_search()
 
 
 if __name__ == "__main__":
