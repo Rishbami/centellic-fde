@@ -48,6 +48,91 @@ def request_json(method, path, **kwargs):
         raise APIError("Could not connect to the service. Please try again.") from exc
 
 
+def render_queue(analyst_id, analysts):
+    queue_filter = st.radio(
+        "Queue",
+        ["Unassigned", "My Alerts", "Reviewed"],
+        horizontal=True,
+        key="queue_filter",
+    )
+    st.button("Refresh queue", icon=":material/refresh:")
+
+    try:
+        alerts = request_json("GET", "/alerts")
+    except APIError as exc:
+        st.error(str(exc))
+        return
+
+    if queue_filter == "Unassigned":
+        filtered = [
+            alert for alert in alerts
+            if alert["status"] == "unassigned" and alert["analyst_id"] is None
+        ]
+    elif queue_filter == "My Alerts":
+        filtered = [
+            alert for alert in alerts
+            if alert["analyst_id"] == analyst_id and alert["status"] != "reviewed"
+        ]
+    else:
+        filtered = [alert for alert in alerts if alert["status"] == "reviewed"]
+
+    if not filtered:
+        st.info("No alerts in this queue.")
+        return
+
+    analyst_names = {a["analyst_id"]: a["name"] for a in analysts}
+    rows = [{
+        "Alert ID": alert["alert_id"],
+        "Rule": alert["rule_triggered"],
+        "Amount": alert["amount"],
+        "Corridor": alert["corridor"],
+        "Risk score": alert["risk_score"],
+        "Status": alert["status"],
+        "Analyst": analyst_names.get(alert["analyst_id"], alert["analyst_id"] or "Unassigned"),
+    } for alert in filtered]
+    st.dataframe(
+        rows,
+        hide_index=True,
+        width="stretch",
+        column_config={"Amount": st.column_config.NumberColumn(format="%.2f")},
+    )
+
+    alert_ids = [alert["alert_id"] for alert in filtered]
+    selected_id = st.session_state.get("selected_alert_id")
+    if st.session_state.get("queue_alert_picker") not in alert_ids:
+        st.session_state.queue_alert_picker = (
+            selected_id if selected_id in alert_ids else alert_ids[0]
+        )
+    selected_id = st.selectbox("Alert", alert_ids, key="queue_alert_picker")
+    st.session_state.selected_alert_id = selected_id
+
+    try:
+        alert = request_json("GET", f"/alerts/{selected_id}")
+    except APIError as exc:
+        st.error(str(exc))
+        return
+
+    alert_column, account_column = st.columns(2)
+    with alert_column:
+        st.subheader("Alert details")
+        st.table([
+            {"Field": field.replace("_", " ").capitalize(), "Value": str(value) if value is not None else "Not recorded"}
+            for field, value in alert.items()
+        ])
+
+    with account_column:
+        st.subheader("Account details")
+        try:
+            account = request_json("GET", f"/accounts/{alert['account_id']}")
+        except APIError as exc:
+            st.error(str(exc))
+            return
+        st.table([
+            {"Field": field.replace("_", " ").capitalize(), "Value": str(value) if value is not None else "Not recorded"}
+            for field, value in account.items()
+        ])
+
+
 def main():
     st.set_page_config(page_title="Fraud AML", layout="wide")
     st.sidebar.title("Fraud AML")
@@ -78,6 +163,35 @@ def main():
     st.title(view)
     if connection_error:
         st.error(connection_error)
+        return
+
+    try:
+        analysts = request_json("GET", "/analysts")
+    except APIError as exc:
+        st.error(str(exc))
+        return
+
+    if not analysts:
+        st.warning("No analysts available.")
+        return
+
+    analyst_names = {a["analyst_id"]: a["name"] for a in analysts}
+    analyst_ids = list(analyst_names)
+    if st.session_state.get("analyst_picker") not in analyst_ids:
+        previous_id = st.session_state.get("selected_analyst_id")
+        st.session_state.analyst_picker = (
+            previous_id if previous_id in analyst_ids else analyst_ids[0]
+        )
+    analyst_id = st.sidebar.selectbox(
+        "Analyst",
+        analyst_ids,
+        format_func=lambda value: analyst_names[value],
+        key="analyst_picker",
+    )
+    st.session_state.selected_analyst_id = analyst_id
+
+    if view == "Alert Queue":
+        render_queue(analyst_id, analysts)
 
 
 if __name__ == "__main__":
