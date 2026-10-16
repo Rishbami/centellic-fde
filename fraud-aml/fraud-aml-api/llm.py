@@ -167,7 +167,11 @@ SIMILAR_ALERTS_TOOL = {
 }
 
 
-def review_with_similar_alerts(alert: dict, account: dict) -> dict:
+def review_with_similar_alerts(
+    alert: dict,
+    account: dict,
+    question: str = "What should I consider when reviewing this alert?",
+) -> dict:
     messages = [
         {
             "role": "user",
@@ -176,6 +180,7 @@ def review_with_similar_alerts(alert: dict, account: dict) -> dict:
                 "Explain the historical evidence and its limitations. "
                 "Document guidance has not been supplied yet, so do not "
                 "claim policy support for your assessment.\n\n"
+                f"Question: {question}\n"
                 f"Alert: {json.dumps(alert)}\n"
                 f"Account: {json.dumps(account)}"
             ),
