@@ -31,3 +31,6 @@ chroma_store/
 
 # Logs
 *.log
+
+# Local planning specification
+/DAY5_SPEC.md
