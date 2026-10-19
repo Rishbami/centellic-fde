@@ -48,7 +48,77 @@ def request_json(method, path, timeout=(3, 15), **kwargs):
         raise APIError("Could not connect to the service. Please try again.") from exc
 
 
+def update_queue_alert(alert_id, analyst_id, outcome=None):
+    # Recheck the latest record before sending the full PUT payload.
+    latest = request_json("GET", f"/alerts/{alert_id}")
+    payload = {field: value for field, value in latest.items() if field != "alert_id"}
+    if outcome is None:
+        if latest["status"] != "unassigned" or latest["analyst_id"] is not None:
+            raise APIError("This alert is no longer unassigned. Refresh the queue.")
+        payload.update(analyst_id=analyst_id, status="under_review", review_outcome=None)
+    else:
+        if latest["analyst_id"] != analyst_id or latest["status"] != "under_review":
+            raise APIError("This alert is no longer assigned to you for review. Refresh the queue.")
+        payload.update(status="reviewed", review_outcome=outcome)
+    return request_json("PUT", f"/alerts/{alert_id}", json=payload)
+
+
+def render_queue_actions(alert, analyst_id):
+    action = None
+    outcome = None
+    if alert["status"] == "unassigned" and alert["analyst_id"] is None:
+        if st.button("Accept Alert", icon=":material/person_add:"):
+            action = "accept"
+    elif alert["status"] == "under_review" and alert["analyst_id"] == analyst_id:
+        outcomes = {
+            "escalated": "Escalated",
+            "information_requested": "Information requested",
+            "closed_false_positive": "Closed as false positive",
+        }
+        with st.form(f"review_{alert['alert_id']}_{analyst_id}"):
+            outcome = st.selectbox(
+                "Review outcome",
+                list(outcomes),
+                index=None,
+                placeholder="Select an outcome",
+                format_func=lambda value: outcomes[value],
+                key=f"review_outcome_{alert['alert_id']}_{analyst_id}",
+            )
+            submitted = st.form_submit_button("Save Outcome", icon=":material/save:")
+        if submitted:
+            if outcome is None:
+                st.warning("Select a review outcome before saving.")
+                return
+            action = "review"
+
+    if action is None:
+        return
+
+    try:
+        with st.spinner("Saving alert..."):
+            update_queue_alert(alert["alert_id"], analyst_id, outcome)
+    except APIError as exc:
+        st.error(str(exc))
+        return
+
+    st.session_state.queue_next_view = {
+        "filter": "My Alerts" if action == "accept" else "Reviewed",
+        "alert_id": alert["alert_id"],
+    }
+    st.session_state.queue_notice = (
+        f"{alert['alert_id']} accepted."
+        if action == "accept" else f"Outcome saved for {alert['alert_id']}."
+    )
+    st.rerun()
+
+
 def render_queue(analyst_id, analysts):
+    next_view = st.session_state.pop("queue_next_view", None)
+    if next_view:
+        st.session_state.queue_filter = next_view["filter"]
+        st.session_state.queue_alert_picker = next_view["alert_id"]
+        st.session_state.selected_alert_id = next_view["alert_id"]
+
     queue_filter = st.radio(
         "Queue",
         ["Unassigned", "My Alerts", "Reviewed"],
@@ -56,6 +126,9 @@ def render_queue(analyst_id, analysts):
         key="queue_filter",
     )
     st.button("Refresh queue", icon=":material/refresh:")
+    notice = st.session_state.pop("queue_notice", None)
+    if notice:
+        st.success(notice)
 
     try:
         alerts = request_json("GET", "/alerts")
@@ -131,6 +204,8 @@ def render_queue(analyst_id, analysts):
             {"Field": field.replace("_", " ").capitalize(), "Value": str(value) if value is not None else "Not recorded"}
             for field, value in account.items()
         ])
+
+    render_queue_actions(alert, analyst_id)
 
 
 def render_ask():
