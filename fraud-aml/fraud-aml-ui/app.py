@@ -241,6 +241,84 @@ def render_ask():
         st.markdown(saved["assessment"])
 
 
+def render_summary():
+    try:
+        alerts = request_json("GET", "/alerts")
+    except APIError as exc:
+        st.error(str(exc))
+        return
+
+    if not alerts:
+        st.info("No alerts available.")
+        return
+
+    alert_ids = [alert["alert_id"] for alert in alerts]
+    if st.session_state.get("summary_alert_picker") not in alert_ids:
+        previous_id = st.session_state.get("selected_alert_id")
+        st.session_state.summary_alert_picker = (
+            previous_id if previous_id in alert_ids else alert_ids[0]
+        )
+    selected_id = st.selectbox("Alert", alert_ids, key="summary_alert_picker")
+    st.session_state.selected_alert_id = selected_id
+    alert = next(alert for alert in alerts if alert["alert_id"] == selected_id)
+    st.caption(
+        f"{alert['rule_triggered']} | {alert['corridor']} | "
+        f"Account: {alert['account_id']}"
+    )
+
+    submitted = st.button("Get Summary", icon=":material/description:")
+    if submitted:
+        st.session_state.summary_result = {
+            "alert_id": selected_id,
+            "text": "",
+            "completed": False,
+            "error": None,
+        }
+
+    saved = st.session_state.get("summary_result")
+    if not saved or saved["alert_id"] != selected_id:
+        return
+
+    st.subheader("Summary")
+    placeholder = st.empty()
+    if submitted:
+        try:
+            with st.spinner("Summarising alert..."):
+                with requests.get(
+                    f"{API_BASE_URL}/alerts/{selected_id}/summary/stream",
+                    stream=True,
+                    timeout=(3, 60),
+                ) as response:
+                    response.raise_for_status()
+                    response.encoding = "utf-8"
+                    for chunk in response.iter_content(
+                        chunk_size=None, decode_unicode=True,
+                    ):
+                        if chunk:
+                            saved["text"] += chunk
+                            placeholder.markdown(saved["text"])
+            if saved["text"].strip():
+                saved["completed"] = True
+            else:
+                saved["error"] = "The service returned no summary. Please try again."
+        except requests.exceptions.Timeout:
+            saved["error"] = "The summary request timed out. Please try again."
+        except requests.exceptions.HTTPError as exc:
+            saved["error"] = (
+                f"The summary request failed (HTTP {exc.response.status_code}). "
+                "Please try again."
+            )
+        except requests.exceptions.RequestException:
+            saved["error"] = "The summary connection failed or was interrupted. Please try again."
+
+    if saved["text"]:
+        placeholder.markdown(saved["text"])
+    if not saved["completed"]:
+        st.warning("Summary incomplete.")
+    if saved["error"]:
+        st.error(saved["error"])
+
+
 def render_search():
     if "guidance_question" not in st.session_state:
         st.session_state.guidance_question = st.session_state.get("last_search_question", "")
@@ -364,6 +442,8 @@ def main():
         render_ask()
     elif view == "Search Guidance":
         render_search()
+    elif view == "Streaming Summary":
+        render_summary()
 
 
 if __name__ == "__main__":
