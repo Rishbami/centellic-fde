@@ -29,11 +29,27 @@ def handle_llm_errors():
     try:
         yield
     except RateLimitError as exc:
-        raise HTTPException(status_code=429, detail="LLM rate limit exceeded") from exc
+        raise HTTPException(
+            status_code=429,
+            detail="LLM rate limit exceeded",
+        ) from exc
     except APITimeoutError as exc:
-        raise HTTPException(status_code=504, detail="LLM request timed out") from exc
+        raise HTTPException(
+            status_code=504,
+            detail="LLM request timed out",
+        ) from exc
     except (APIConnectionError, APIStatusError) as exc:
-        raise HTTPException(status_code=502, detail="LLM provider unavailable") from exc
+        print(
+            "LLM failure:",
+            type(exc).__name__,
+            "status:",
+            getattr(exc, "status_code", None),
+            flush=True,
+        )
+        raise HTTPException(
+            status_code=502,
+            detail="LLM provider unavailable",
+        ) from exc
 
 
 @router.post("/{alert_id}/summary")

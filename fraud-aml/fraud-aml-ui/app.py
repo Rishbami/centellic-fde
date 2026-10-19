@@ -16,12 +16,12 @@ class APIError(Exception):
         self.status_code = status_code
 
 
-def request_json(method, path, **kwargs):
+def request_json(method, path, timeout=(3, 15), **kwargs):
     try:
         with requests.request(
             method,
             f"{API_BASE_URL}{path}",
-            timeout=(3, 15),
+            timeout=timeout,
             **kwargs,
         ) as response:
             response.raise_for_status()
@@ -131,6 +131,114 @@ def render_queue(analyst_id, analysts):
             {"Field": field.replace("_", " ").capitalize(), "Value": str(value) if value is not None else "Not recorded"}
             for field, value in account.items()
         ])
+
+
+def render_ask():
+    try:
+        alerts = request_json("GET", "/alerts")
+    except APIError as exc:
+        st.error(str(exc))
+        return
+
+    if not alerts:
+        st.info("No alerts available.")
+        return
+
+    alert_ids = [alert["alert_id"] for alert in alerts]
+    if st.session_state.get("ask_alert_picker") not in alert_ids:
+        previous_id = st.session_state.get("selected_alert_id")
+        st.session_state.ask_alert_picker = (
+            previous_id if previous_id in alert_ids else alert_ids[0]
+        )
+    selected_id = st.selectbox("Alert", alert_ids, key="ask_alert_picker")
+    st.session_state.selected_alert_id = selected_id
+
+    try:
+        alert = request_json("GET", f"/alerts/{selected_id}")
+        account = request_json("GET", f"/accounts/{alert['account_id']}")
+    except APIError as exc:
+        st.error(str(exc))
+        return
+
+    with st.expander("Alert and account details"):
+        alert_column, account_column = st.columns(2)
+        for column, title, record in (
+            (alert_column, "Alert details", alert),
+            (account_column, "Account details", account),
+        ):
+            with column:
+                st.subheader(title)
+                st.table([
+                    {
+                        "Field": field.replace("_", " ").capitalize(),
+                        "Value": str(value) if value is not None else "Not recorded",
+                    }
+                    for field, value in record.items()
+                ])
+
+    if "ask_question" not in st.session_state:
+        st.session_state.ask_question = st.session_state.get("last_ask_question", "")
+
+    with st.form("agent_ask"):
+        question = st.text_area("Question", key="ask_question")
+        submitted = st.form_submit_button("Ask", icon=":material/send:")
+
+    if submitted:
+        question = question.strip()
+        st.session_state.last_ask_question = question
+        st.session_state.pop("ask_result", None)
+        st.session_state.pop("ask_feedback", None)
+
+        if not question:
+            st.session_state.ask_feedback = {
+                "alert_id": selected_id,
+                "level": "warning",
+                "message": "Enter a question to ask.",
+            }
+        else:
+            try:
+                with st.spinner("Investigating alert..."):
+                    result = request_json(
+                        "POST",
+                        "/agent/ask",
+                        timeout=(3, 180),
+                        json={"alert_id": selected_id, "question": question},
+                    )
+                if (
+                    not isinstance(result, dict)
+                    or result.get("alert_id") != selected_id
+                    or not isinstance(result.get("assessment"), str)
+                    or not result["assessment"].strip()
+                ):
+                    raise APIError("The agent returned an invalid assessment. Please try again.")
+                st.session_state.ask_result = {
+                    "alert_id": selected_id,
+                    "question": question,
+                    "assessment": result["assessment"],
+                }
+            except APIError as exc:
+                message = (
+                    "The agent could not complete this assessment. Please try again."
+                    if exc.status_code == 500 else str(exc)
+                )
+                st.session_state.ask_feedback = {
+                    "alert_id": selected_id,
+                    "level": "error",
+                    "message": message,
+                }
+
+    feedback = st.session_state.get("ask_feedback")
+    if feedback and feedback["alert_id"] == selected_id:
+        if feedback["level"] == "warning":
+            st.warning(feedback["message"])
+        else:
+            st.error(feedback["message"])
+
+    saved = st.session_state.get("ask_result")
+    if saved and saved["alert_id"] == selected_id:
+        st.subheader("Assessment")
+        st.caption(f"{saved['alert_id']} | Question: {saved['question']}")
+        st.markdown(saved["assessment"])
 
 
 def render_search():
@@ -252,6 +360,8 @@ def main():
 
     if view == "Alert Queue":
         render_queue(analyst_id, analysts)
+    elif view == "Ask":
+        render_ask()
     elif view == "Search Guidance":
         render_search()
 
