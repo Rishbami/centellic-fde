@@ -11,6 +11,7 @@ from anthropic import (
 )
 
 from dotenv import load_dotenv
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field
 
 from similar_alerts import find_similar_alerts
@@ -181,11 +182,15 @@ def review_with_similar_alerts(
                 "Document guidance has not been supplied yet, so do not "
                 "claim policy support for your assessment.\n\n"
                 f"Question: {question}\n"
-                f"Alert: {json.dumps(alert)}\n"
+                f"Alert: {json.dumps(jsonable_encoder(alert))}\n"
                 f"Account: {json.dumps(account)}"
             ),
         }
     ]
+
+    total_input_tokens = 0
+    total_output_tokens = 0
+    tool_calls_made = 0
 
     for _ in range(5):
         response = client.messages.create(
@@ -196,12 +201,18 @@ def review_with_similar_alerts(
             messages=messages,
         )
 
+        total_input_tokens += response.usage.input_tokens
+        total_output_tokens += response.usage.output_tokens
+
         if response.stop_reason == "end_turn":
             return {
                 "alert_id": alert["alert_id"],
                 "assessment": "\n".join(
                     block.text for block in response.content if block.type == "text"
                 ),
+                "tool_calls_made": tool_calls_made,
+                "input_tokens": total_input_tokens,
+                "output_tokens": total_output_tokens,
             }
 
         if response.stop_reason != "tool_use":
@@ -228,6 +239,7 @@ def review_with_similar_alerts(
                 raise ValueError("Took limit must be an integer from 1 to 5.")
 
             matches = find_similar_alerts(alert, limit=limit)
+            tool_calls_made += 1
 
             tool_results.append(
                 {

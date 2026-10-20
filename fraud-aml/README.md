@@ -253,4 +253,139 @@ The project should allow an analyst to:
 
 ## Running the Project
 
-Instructions will be added as the backend and frontend are built.
+Run the backend and frontend in separate terminals. Commands below start from
+the project root. Python 3.13 is used by the current development environments.
+
+### Backend Setup
+
+For a fresh environment:
+
+```bash
+cd fraud-aml-api
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+The backend reads these settings from `fraud-aml-api/.env` or exported environment
+variables. Use your provider credentials and model IDs:
+
+```dotenv
+ANTHROPIC_API_KEY=<your Anthropic API key>
+ANTHROPIC_MODEL=<your Claude model ID>
+VOYAGE_API_KEY=<your Voyage API key>
+EMBED_MODEL=<your Voyage embedding model ID>
+RELEVANCE_FLOOR=0.35
+```
+
+An exported value takes precedence over `.env`. Restart the backend after changing
+credentials or model settings. Keep credentials out of Git and the frontend.
+
+### Start the Backend
+
+From the project root:
+
+```bash
+cd fraud-aml-api
+source .venv/bin/activate
+uvicorn main:app --reload
+```
+
+- Health: http://localhost:8000/health
+- API documentation: http://localhost:8000/docs
+
+Before the first guidance search, build the index once through
+`POST /knowledge/index` in the API documentation. Indexing and searches use Voyage
+embeddings and can incur provider charges. Rebuild after changing the guidance
+documents. The Chroma index persists in `fraud-aml-api/chroma_store/` when the
+backend is launched from that directory.
+
+### Frontend Setup
+
+In a second terminal, from the project root, for a fresh environment:
+
+```bash
+cd fraud-aml-ui
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+The frontend defaults to `http://localhost:8000`. To use another backend address,
+set `API_BASE_URL` in `fraud-aml-ui/.env` or export it before starting Streamlit.
+
+### Start the Frontend
+
+From the project root:
+
+```bash
+cd fraud-aml-ui
+source .venv/bin/activate
+streamlit run app.py
+```
+
+Open http://localhost:8501 and keep both terminals running. If the environments
+already exist with dependencies installed, only the two startup sections are
+needed. Ask and summary requests use Anthropic credits when submitted.
+
+## Manual Walkthrough
+
+1. **Alert Queue:** select an analyst, open Unassigned, choose an alert, and click
+   Accept Alert below its details. Verify it opens in My Alerts with status
+   `under_review` and the selected analyst assigned.
+2. **Ask:** select that alert, enter "How does this alert compare with previously
+   reviewed cases?", and submit. Verify an assessment appears. Switch views and
+   return: the result should remain without another AI request. Changing the alert
+   must not display the previous alert's assessment as its own.
+3. **Search Guidance:** search for "What checks should I perform for a sanctions
+   name match?". Verify titles, scores, and document text appear. A blank question
+   should be rejected without a search request. This view retrieves documents;
+   it does not generate an answer.
+4. **Streaming Summary:** select an alert and click Get Summary. Verify text arrives
+   progressively and remains after navigating away and back. Test another alert ID.
+5. **Save Outcome:** return to My Alerts, select the accepted alert, explicitly
+   choose a review outcome, and click Save Outcome. Verify it opens in Reviewed
+   with the saved outcome and status `reviewed`.
+6. **Failure states:** stop the backend and refresh the frontend to verify a clear
+   connection error. Restart it and use Refresh connection. If a summary stream
+   fails, any received text should remain labelled incomplete. Failed queue updates
+   should retain the current selection and outcome choice.
+
+The analyst selector is a demo identity choice, not login or access control.
+Assignments and outcomes are stored in memory and reset when the backend restarts
+or reloads. The UI never saves an AI decision automatically.
+
+## Automated Tests
+
+From the project root:
+
+```bash
+cd fraud-aml-api
+source .venv/bin/activate
+python -m pytest -v
+```
+
+The current agent tests mock the model and historical retrieval, so they do not
+spend API credits. They verify the five-round limit, the successful tool-result
+exchange, and reviewing an alert after assignment updates its timestamp. There
+are no committed frontend test files; the walkthrough above is
+the repeatable manual UI check.
+
+## Current Implementation Limits
+
+- `POST /agent/ask` accepts an alert ID and question, then runs the historical-alert
+  agent. It returns `alert_id` and free-text `assessment`. Document search is not
+  connected to that agent yet.
+- Grounded document answers remain available separately through
+  `POST /knowledge/ask`, with the relevance threshold and refusal rule.
+- Ask does not currently return tool-call counts, token totals, structured
+  recommendations, or a structured incomplete result. Reaching the agent's loop
+  limit currently results in an HTTP 500, which the UI shows as a failed assessment.
+  Execution metrics and structured incomplete results from the original UI brief
+  remain outstanding.
+- Only summaries stream. Ask returns its assessment after generation finishes.
+- Search Guidance recognises HTTP 409 as an unbuilt index. The current storage
+  search has no explicit empty-index check, so an unbuilt index may instead appear
+  as an empty result or another retrieval failure.
+- Queue assignment checks are performed in the UI before PUT; the API does not
+  enforce analyst ownership or atomic assignment for concurrent users.
