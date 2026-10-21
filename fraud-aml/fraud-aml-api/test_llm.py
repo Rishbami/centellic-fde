@@ -166,3 +166,36 @@ def test_provider_failure_becomes_502(monkeypatch, failure):
 
     assert response.status_code == 502
     assert response.json() == {"detail": "LLM provider unavailable"}
+
+
+def test_estimate_does_not_generate_a_summary(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from routers.insights import router
+
+    estimate_calls = []
+
+    def fake_estimate(alert, account):
+        estimate_calls.append((alert["alert_id"], account["account_id"]))
+        return 137
+
+    def unexpected_generation(*args, **kwargs):
+        pytest.fail("Token estimation must not generate a summary")
+
+    monkeypatch.setattr(llm, "estimate_input_tokens", fake_estimate)
+    monkeypatch.setattr(llm, "MODEL", "test-model")
+    monkeypatch.setattr(llm, "summarise_alert", unexpected_generation)
+    monkeypatch.setattr(llm.client.messages, "create", unexpected_generation)
+
+    app = FastAPI()
+    app.include_router(router)
+    with TestClient(app) as client:
+        response = client.get("/alerts/ALT-048/summary/estimate")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "alert_id": "ALT-048",
+        "estimated_input_tokens": 137,
+        "model": "test-model",
+    }
+    assert estimate_calls == [("ALT-048", "ACC-016")]
