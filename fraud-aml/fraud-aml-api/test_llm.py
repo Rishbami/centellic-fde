@@ -26,3 +26,31 @@ def test_summary_returns_text_and_usage(monkeypatch):
 
     assert response.status_code == 200
     assert response.json() == fake_summary
+
+
+def test_summary_receives_correct_alert_and_account(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from data import ACCOUNTS, ALERTS
+    from routers.insights import router
+
+    expected_alert = next(a for a in ALERTS if a["alert_id"] == "ALT-048")
+    expected_account = next(
+        a for a in ACCOUNTS if a["account_id"] == expected_alert["account_id"]
+    )
+    calls = []
+
+    def fake_summary(alert, account):
+        calls.append((alert, account))
+        return {"summary": "Summary for the selected alert."}
+
+    monkeypatch.setattr(llm, "summarise_alert", fake_summary)
+    app = FastAPI()
+    app.include_router(router)
+    with TestClient(app) as client:
+        response = client.post("/alerts/ALT-048/summary")
+
+    assert response.status_code == 200
+    assert len(calls) == 1
+    assert calls[0][0] is expected_alert
+    assert calls[0][1] is expected_account
