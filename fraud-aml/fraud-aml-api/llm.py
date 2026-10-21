@@ -210,6 +210,8 @@ def review_with_similar_alerts(
                 "assessment": "\n".join(
                     block.text for block in response.content if block.type == "text"
                 ),
+                "completed": True,
+                "stop_reason": response.stop_reason,
                 "tool_calls_made": tool_calls_made,
                 "input_tokens": total_input_tokens,
                 "output_tokens": total_output_tokens,
@@ -251,4 +253,12 @@ def review_with_similar_alerts(
 
         messages.append({"role": "user", "content": tool_results})
 
-    raise RuntimeError("Agent exceed the maximum number of rounds.")
+    return {
+        "alert_id": alert["alert_id"],
+        "assessment": None,
+        "completed": False,
+        "stop_reason": "max_iterations",
+        "tool_calls_made": tool_calls_made,
+        "input_tokens": total_input_tokens,
+        "output_tokens": total_output_tokens,
+    }

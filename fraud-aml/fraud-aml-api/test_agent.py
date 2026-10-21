@@ -61,8 +61,14 @@ def test_agent_stops_at_max_iterations_instead_of_looping_forever(monkeypatch):
     alert = next(a for a in ALERTS if a["alert_id"] == "ALT-048")
     account = next(a for a in ACCOUNTS if a["account_id"] == alert["account_id"])
 
-    with pytest.raises(RuntimeError, match="maximum number of rounds"):
-        llm.review_with_similar_alerts(alert, account)
+    result = llm.review_with_similar_alerts(alert, account)
+
+    assert result["completed"] is False
+    assert result["stop_reason"] == "max_iterations"
+    assert result["assessment"] is None
+    assert result["tool_calls_made"] == 5
+    assert result["input_tokens"] == 500
+    assert result["output_tokens"] == 75
 
     assert len(model_calls) == 5
     assert tool_calls == [("ALT-048", 2)] * 5
@@ -119,6 +125,8 @@ def test_agent_returns_assessment_after_sending_tool_evidence(monkeypatch):
     assert result == {
         "alert_id": "ALT-048",
         "assessment": assessment,
+        "completed": True,
+        "stop_reason": "end_turn",
         "tool_calls_made": 1,
         "input_tokens": 200,
         "output_tokens": 30,
