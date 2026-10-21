@@ -135,3 +135,34 @@ def test_provider_rate_limit_becomes_429(monkeypatch):
 
     assert response.status_code == 429
     assert response.json() == {"detail": "LLM rate limit exceeded"}
+
+
+@pytest.mark.parametrize("failure", ["connection", "authentication", "server"])
+def test_provider_failure_becomes_502(monkeypatch, failure):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from routers.insights import router
+
+    def provider_failure(alert, account):
+        request = httpx.Request("POST", "https://example.test/messages")
+        message = "Private provider diagnostic"
+        if failure == "connection":
+            raise anthropic.APIConnectionError(message=message, request=request)
+        error_type, status = (
+            (anthropic.AuthenticationError, 401)
+            if failure == "authentication" else (anthropic.InternalServerError, 500)
+        )
+        raise error_type(
+            message,
+            response=httpx.Response(status, request=request),
+            body={"error": {"message": message}},
+        )
+
+    monkeypatch.setattr(llm, "summarise_alert", provider_failure)
+    app = FastAPI()
+    app.include_router(router)
+    with TestClient(app) as client:
+        response = client.post("/alerts/ALT-048/summary")
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "LLM provider unavailable"}
