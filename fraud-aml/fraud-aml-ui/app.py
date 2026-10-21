@@ -282,14 +282,26 @@ def render_ask():
                 if (
                     not isinstance(result, dict)
                     or result.get("alert_id") != selected_id
-                    or not isinstance(result.get("assessment"), str)
-                    or not result["assessment"].strip()
+                    or type(result.get("completed")) is not bool
+                    or not isinstance(result.get("stop_reason"), str)
+                    or any(
+                        type(result.get(key)) is not int or result[key] < 0
+                        for key in (
+                            "tool_calls_made", "input_tokens", "output_tokens"
+                        )
+                    )
+                    or (
+                        result["completed"]
+                        and (
+                            not isinstance(result.get("assessment"), str)
+                            or not result["assessment"].strip()
+                        )
+                    )
                 ):
-                    raise APIError("The agent returned an invalid assessment. Please try again.")
+                    raise APIError("The agent returned an invalid response.")
                 st.session_state.ask_result = {
-                    "alert_id": selected_id,
+                    **result,
                     "question": question,
-                    "assessment": result["assessment"],
                 }
             except APIError as exc:
                 message = (
@@ -310,10 +322,23 @@ def render_ask():
             st.error(feedback["message"])
 
     saved = st.session_state.get("ask_result")
-    if saved and saved["alert_id"] == selected_id:
-        st.subheader("Assessment")
+    if saved and saved["alert_id"] == selected_id and "completed" in saved:
         st.caption(f"{saved['alert_id']} | Question: {saved['question']}")
-        st.markdown(saved["assessment"])
+        tools, inputs, outputs = st.columns(3)
+        tools.metric("Tool calls", saved["tool_calls_made"])
+        inputs.metric("Input tokens", saved["input_tokens"])
+        outputs.metric("Output tokens", saved["output_tokens"])
+
+        if saved["completed"]:
+            st.subheader("Assessment")
+            st.markdown(saved["assessment"])
+        elif saved["stop_reason"] == "max_iterations":
+            st.warning(
+                "The agent reached its investigation limit "
+                "without completing an assessment."
+            )
+        else:
+            st.warning("The agent did not complete this assessment.")
 
 
 def render_summary():
