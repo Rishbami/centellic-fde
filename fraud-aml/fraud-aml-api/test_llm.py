@@ -110,3 +110,28 @@ def test_provider_timeout_becomes_504(monkeypatch):
 
     assert response.status_code == 504
     assert response.json() == {"detail": "LLM request timed out"}
+
+
+def test_provider_rate_limit_becomes_429(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from routers.insights import router
+
+    def rate_limited(alert, account):
+        raise anthropic.RateLimitError(
+            "Provider rate limit reached",
+            response=httpx.Response(
+                429,
+                request=httpx.Request("POST", "https://example.test/messages"),
+            ),
+            body=None,
+        )
+
+    monkeypatch.setattr(llm, "summarise_alert", rate_limited)
+    app = FastAPI()
+    app.include_router(router)
+    with TestClient(app) as client:
+        response = client.post("/alerts/ALT-048/summary")
+
+    assert response.status_code == 429
+    assert response.json() == {"detail": "LLM rate limit exceeded"}
