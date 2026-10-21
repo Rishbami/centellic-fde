@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 import anthropic
 import httpx
 import pytest
@@ -225,3 +227,50 @@ def test_stream_returns_summary_text(monkeypatch):
 
     assert body == "High-volume payments flagged for review."
     assert stream_calls == [("ALT-048", "ACC-016")]
+
+
+def test_summarise_alert_sends_context_and_returns_usage(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from data import ACCOUNTS, ALERTS
+
+    alert = next(a for a in ALERTS if a["alert_id"] == "ALT-048")
+    account = next(a for a in ACCOUNTS if a["account_id"] == alert["account_id"])
+    calls = []
+
+    def fake_create(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(
+            content=[SimpleNamespace(text="High-volume payments need review.")],
+            usage=SimpleNamespace(input_tokens=120, output_tokens=95),
+            stop_reason="end_turn",
+        )
+
+    monkeypatch.setattr(llm, "MODEL", "test-model")
+    monkeypatch.setattr(llm.client.messages, "create", fake_create)
+
+    result = llm.summarise_alert(alert, account)
+
+    assert result == {
+        "alert_id": "ALT-048",
+        "account_id": "ACC-016",
+        "summary": "High-volume payments need review.",
+        "input_tokens": 120,
+        "output_tokens": 95,
+        "stop_reason": "end_turn",
+    }
+    assert len(calls) == 1
+    assert calls[0]["model"] == "test-model"
+    assert calls[0]["system"] == llm.SYSTEM_PROMPT
+    assert calls[0]["max_tokens"] == 500
+    assert len(calls[0]["messages"]) == 1
+    assert calls[0]["messages"][0]["role"] == "user"
+    prompt = calls[0]["messages"][0]["content"]
+    assert f"Alert ID: {alert['alert_id']}" in prompt
+    assert f"Amount (currency not provided): {alert['amount']}" in prompt
+    assert f"Payment corridor: {alert['corridor']}" in prompt
+    assert f"Rule triggered: {alert['rule_triggered']}" in prompt
+    assert f"Counterparty: {alert['counterparty']}" in prompt
+    assert f"Account ID: {account['account_id']}" in prompt
+    assert f"Account holder: {account['account_holder_name']}" in prompt
+    assert f"Account balance (currency not provided): {account['balance']}" in prompt
