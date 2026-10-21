@@ -1,3 +1,5 @@
+import anthropic
+import httpx
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -88,3 +90,23 @@ def test_missing_summary_context_returns_404_without_provider_work(
 
     assert response.status_code == 404
     assert response.json() == {"detail": expected_detail}
+
+
+def test_provider_timeout_becomes_504(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from routers.insights import router
+
+    def timeout(alert, account):
+        raise anthropic.APITimeoutError(
+            request=httpx.Request("POST", "https://example.test/messages")
+        )
+
+    monkeypatch.setattr(llm, "summarise_alert", timeout)
+    app = FastAPI()
+    app.include_router(router)
+    with TestClient(app) as client:
+        response = client.post("/alerts/ALT-048/summary")
+
+    assert response.status_code == 504
+    assert response.json() == {"detail": "LLM request timed out"}
