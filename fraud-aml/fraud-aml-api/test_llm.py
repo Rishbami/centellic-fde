@@ -274,3 +274,38 @@ def test_summarise_alert_sends_context_and_returns_usage(monkeypatch):
     assert f"Account ID: {account['account_id']}" in prompt
     assert f"Account holder: {account['account_holder_name']}" in prompt
     assert f"Account balance (currency not provided): {account['balance']}" in prompt
+
+
+def test_estimate_input_tokens_counts_context_without_generation(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from data import ACCOUNTS, ALERTS
+
+    alert = next(a for a in ALERTS if a["alert_id"] == "ALT-048")
+    account = next(a for a in ACCOUNTS if a["account_id"] == alert["account_id"])
+    calls = []
+
+    def fake_count_tokens(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(input_tokens=137)
+
+    def unexpected_generation(*args, **kwargs):
+        pytest.fail("Token counting must not generate a response")
+
+    monkeypatch.setattr(llm, "MODEL", "test-model")
+    monkeypatch.setattr(llm.client.messages, "count_tokens", fake_count_tokens)
+    monkeypatch.setattr(llm.client.messages, "create", unexpected_generation)
+    monkeypatch.setattr(llm.client.messages, "stream", unexpected_generation)
+
+    result = llm.estimate_input_tokens(alert, account)
+
+    assert result == 137
+    assert len(calls) == 1
+    assert calls[0]["model"] == "test-model"
+    assert calls[0]["system"] == llm.SYSTEM_PROMPT
+    assert len(calls[0]["messages"]) == 1
+    assert calls[0]["messages"][0]["role"] == "user"
+    prompt = calls[0]["messages"][0]["content"]
+    assert f"Alert ID: {alert['alert_id']}" in prompt
+    assert f"Account ID: {account['account_id']}" in prompt
+    assert f"Counterparty: {alert['counterparty']}" in prompt
