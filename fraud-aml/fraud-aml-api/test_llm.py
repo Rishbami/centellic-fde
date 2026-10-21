@@ -199,3 +199,29 @@ def test_estimate_does_not_generate_a_summary(monkeypatch):
         "model": "test-model",
     }
     assert estimate_calls == [("ALT-048", "ACC-016")]
+
+
+def test_stream_returns_summary_text(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+    from routers.insights import router
+
+    stream_calls = []
+
+    def fake_stream(alert, account):
+        stream_calls.append((alert["alert_id"], account["account_id"]))
+        return iter(["High-volume ", "payments flagged ", "for review."])
+
+    monkeypatch.setattr(llm, "stream_alert_summary", fake_stream)
+    app = FastAPI()
+    app.include_router(router)
+    with (
+        TestClient(app) as client,
+        client.stream("GET", "/alerts/ALT-048/summary/stream") as response,
+    ):
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("text/plain")
+        body = "".join(response.iter_text())
+
+    assert body == "High-volume payments flagged for review."
+    assert stream_calls == [("ALT-048", "ACC-016")]
