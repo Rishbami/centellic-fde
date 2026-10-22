@@ -80,3 +80,20 @@ def test_index_returns_document_and_embedding_token_counts(monkeypatch, knowledg
     assert response.status_code == 200
     assert response.json() == {"indexed": 8, "embedding_tokens": 240}
     assert calls == ["build", "count"]
+
+
+def test_search_before_indexing_returns_409(monkeypatch, knowledge_client):
+    client, knowledge = knowledge_client
+    message = "Guidance index has not been built. Run POST /knowledge/index first."
+
+    def not_built(question, top_k):
+        raise RuntimeError(message)
+
+    monkeypatch.setattr(knowledge, "search", not_built)
+
+    response = client.post(
+        "/knowledge/search", json={"question": "What checks apply to this alert?"}
+    )
+
+    assert response.status_code == 409
+    assert response.json() == {"detail": message}
