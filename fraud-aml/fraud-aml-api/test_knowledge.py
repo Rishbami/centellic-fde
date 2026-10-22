@@ -131,3 +131,24 @@ def test_invalid_questions_are_rejected_before_retrieval(
         error["loc"] == ["body", "question"]
         for error in response.json()["detail"]
     )
+
+
+@pytest.mark.parametrize("top_k", [-1, 0, 9])
+def test_invalid_top_k_is_rejected_before_retrieval(monkeypatch, knowledge_client, top_k):
+    client, knowledge = knowledge_client
+
+    def unexpected_search(_question, _top_k):
+        pytest.fail("Invalid result limits must be rejected before retrieval")
+
+    monkeypatch.setattr(knowledge, "search", unexpected_search)
+
+    response = client.post(
+        "/knowledge/search",
+        json={"question": "What checks apply to this alert?", "top_k": top_k},
+    )
+
+    assert response.status_code == 422
+    assert any(
+        error["loc"] == ["body", "top_k"]
+        for error in response.json()["detail"]
+    )
