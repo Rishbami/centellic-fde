@@ -97,3 +97,14 @@ def test_search_before_indexing_returns_409(monkeypatch, knowledge_client):
 
     assert response.status_code == 409
     assert response.json() == {"detail": message}
+
+
+def test_search_without_matches_returns_empty_results(monkeypatch, knowledge_client):
+    client, knowledge = knowledge_client
+    question = "Is there guidance for this unfamiliar payment pattern?"
+    monkeypatch.setattr(knowledge, "search", lambda _question, _top_k: [])
+
+    response = client.post("/knowledge/search", json={"question": question})
+
+    assert response.status_code == 200
+    assert response.json() == {"question": question, "results": []}
