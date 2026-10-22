@@ -349,3 +349,41 @@ def test_estimate_input_tokens_counts_context_without_generation(monkeypatch):
     assert f"Alert ID: {alert['alert_id']}" in prompt
     assert f"Account ID: {account['account_id']}" in prompt
     assert f"Counterparty: {alert['counterparty']}" in prompt
+
+
+def test_answer_from_context_sends_grounded_prompt_and_returns_usage(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-real")
+    import llm
+
+    question = "What should an analyst check before closing this alert?"
+    context = "[doc-001] Investigation guidance\nVerify the payment purpose."
+    answer = "Verify the payment purpose before closing the alert [doc-001]."
+    calls = []
+
+    def fake_create(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(
+            content=[SimpleNamespace(text=answer)],
+            usage=SimpleNamespace(input_tokens=400, output_tokens=30),
+            stop_reason="end_turn",
+        )
+
+    monkeypatch.setattr(llm, "MODEL", "test-model")
+    monkeypatch.setattr(llm.client.messages, "create", fake_create)
+
+    result = llm.answer_from_context(question, context)
+
+    assert result == {
+        "answer": answer,
+        "input_tokens": 400,
+        "output_tokens": 30,
+        "stop_reason": "end_turn",
+    }
+    assert len(calls) == 1
+    assert calls[0]["model"] == "test-model"
+    assert calls[0]["system"] == llm.GROUNDED_SYSTEM_PROMPT
+    assert calls[0]["max_tokens"] == 500
+    assert calls[0]["messages"] == [{
+        "role": "user",
+        "content": f"Context: \n\n{context}\n\nQuestion: {question}",
+    }]
