@@ -108,3 +108,26 @@ def test_search_without_matches_returns_empty_results(monkeypatch, knowledge_cli
 
     assert response.status_code == 200
     assert response.json() == {"question": question, "results": []}
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [pytest.param({}, id="missing-question"), pytest.param({"question": ""}, id="empty-question")],
+)
+def test_invalid_questions_are_rejected_before_retrieval(
+    monkeypatch, knowledge_client, payload
+):
+    client, knowledge = knowledge_client
+
+    def unexpected_search(_question, _top_k):
+        pytest.fail("Invalid questions must be rejected before retrieval")
+
+    monkeypatch.setattr(knowledge, "search", unexpected_search)
+
+    response = client.post("/knowledge/search", json=payload)
+
+    assert response.status_code == 422
+    assert any(
+        error["loc"] == ["body", "question"]
+        for error in response.json()["detail"]
+    )
