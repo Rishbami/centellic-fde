@@ -58,3 +58,25 @@ def test_search_returns_ranked_hits_without_generation(monkeypatch, knowledge_cl
     assert response.status_code == 200
     assert response.json() == {"question": question, "results": hits}
     assert calls == [(question, 2)]
+
+
+def test_index_returns_document_and_embedding_token_counts(monkeypatch, knowledge_client):
+    client, knowledge = knowledge_client
+    calls = []
+
+    def fake_build_index():
+        calls.append("build")
+        return 240
+
+    def fake_count():
+        calls.append("count")
+        return 8
+
+    monkeypatch.setattr(knowledge, "build_index", fake_build_index)
+    monkeypatch.setattr(knowledge, "count", fake_count)
+
+    response = client.post("/knowledge/index")
+
+    assert response.status_code == 200
+    assert response.json() == {"indexed": 8, "embedding_tokens": 240}
+    assert calls == ["build", "count"]
