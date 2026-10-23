@@ -1,0 +1,400 @@
+{
+  "strategy": "whole_document",
+  "embedding_model": "voyage-3-lite",
+  "answer_model": "claude-haiku-4-5-20251001",
+  "floor": 0.475,
+  "questions": [
+    {
+      "id": "q01",
+      "question": "When investigating possible structuring, should payments be assessed individually or together?",
+      "doc_id": "doc-001",
+      "evidence": "Analysts should assess the combined value and pattern rather than treating each payment in isolation.",
+      "keywords": [
+        "combined|together|aggregate*",
+        "pattern*"
+      ],
+      "kind": "procedure"
+    },
+    {
+      "id": "q02",
+      "question": "Does a single structuring indicator prove suspicious activity?",
+      "doc_id": "doc-001",
+      "evidence": "A single indicator does not prove suspicious activity.",
+      "keywords": [
+        "single",
+        "not|no|cannot|insufficient",
+        "prove|proof"
+      ],
+      "kind": "negation"
+    },
+    {
+      "id": "q03",
+      "question": "Is a high-risk payment corridor sufficient on its own to justify escalation?",
+      "doc_id": "doc-002",
+      "evidence": "A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation.",
+      "keywords": [
+        "corridor",
+        "not|no|cannot|insufficient",
+        "alone|sole|own"
+      ],
+      "kind": "negation"
+    },
+    {
+      "id": "q04",
+      "question": "How should previous alert outcomes influence a new investigation?",
+      "doc_id": "doc-003",
+      "evidence": "Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence.",
+      "keywords": [
+        "support*",
+        "evidence"
+      ],
+      "kind": "historical_evidence"
+    },
+    {
+      "id": "q05",
+      "question": "Who must make and record the final alert decision?",
+      "doc_id": "doc-003",
+      "evidence": "An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+      "keywords": [
+        "analyst",
+        "final",
+        "record*|document*"
+      ],
+      "kind": "decision_authority"
+    },
+    {
+      "id": "q06",
+      "question": "What internal information must analysts avoid disclosing when requesting evidence?",
+      "doc_id": "doc-004",
+      "evidence": "Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered.",
+      "keywords": [
+        "monitoring",
+        "threshold*",
+        "report*|SAR"
+      ],
+      "kind": "disclosure_restriction"
+    },
+    {
+      "id": "q07",
+      "question": "Is a name-only sanctions match enough to confirm a true match?",
+      "doc_id": "doc-005",
+      "evidence": "A name-only match is not sufficient to confirm a true match, particularly where the name is common.",
+      "keywords": [
+        "name",
+        "not|no|insufficient|cannot"
+      ],
+      "kind": "negation"
+    },
+    {
+      "id": "q08",
+      "question": "What should happen when sanctions review finds material identifier matches or ownership/control concerns?",
+      "doc_id": "doc-005",
+      "evidence": "Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team.",
+      "keywords": [
+        "escalat*",
+        "immediat*",
+        "sanctions",
+        "team"
+      ],
+      "kind": "escalation_procedure"
+    },
+    {
+      "id": "q09",
+      "question": "Who decides whether an external suspicious activity report is required?",
+      "doc_id": "doc-006",
+      "evidence": "The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically.",
+      "keywords": [
+        "nominated",
+        "team"
+      ],
+      "kind": "decision_authority"
+    },
+    {
+      "id": "q10",
+      "question": "What evidence supported the payroll case being treated as a false positive?",
+      "doc_id": "doc-007",
+      "evidence": "Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year.",
+      "keywords": [
+        "employee*",
+        "payroll",
+        "month*",
+        "year"
+      ],
+      "kind": "case_evidence"
+    },
+    {
+      "id": "q11",
+      "question": "What differences would require further investigation in another batch-payment alert?",
+      "doc_id": "doc-007",
+      "evidence": "This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+      "keywords": [
+        "new|unfamiliar",
+        "counterpart*",
+        "timing",
+        "value|amount*"
+      ],
+      "kind": "exception"
+    },
+    {
+      "id": "q12",
+      "question": "Can future sanctions alerts involving a previously cleared name skip another check?",
+      "doc_id": "doc-008",
+      "evidence": "Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+      "keywords": [
+        "check*|review*",
+        "current|up-to-date",
+        "change*"
+      ],
+      "kind": "exception"
+    },
+    {
+      "id": "q13",
+      "question": "What exact monetary threshold triggers a structuring alert?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q14",
+      "question": "Within how many hours must an external suspicious activity report be filed?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q15",
+      "question": "Have the payroll records for alert ALT-048 been independently verified?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q16",
+      "question": "Which sanctions list provider does the company use?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    }
+  ],
+  "answer_accuracy": 0.917,
+  "refusal_accuracy": 1,
+  "false_refusals": [
+    "q10"
+  ],
+  "wrong_or_unrefused": [],
+  "model_calls": 14,
+  "avg_input_tokens": 299,
+  "answers": [
+    {
+      "id": "q01",
+      "expected_doc_id": "doc-001",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-001"
+      ],
+      "answer": "According to the Structuring and Rapid Movement Typology Guide, payments should be assessed together rather than individually. The document explicitly states that \"Analysts should assess the combined value and pattern rather than treating each payment in isolation\" [doc-001]. \n\nThis approach is important because a single indicator does not prove suspicious activity on its own. Instead, analysts should consider the overall pattern and combined value of payments alongside the account profile, expected use, and available source-of-funds information [doc-001].",
+      "input_tokens": 264,
+      "output_tokens": 108,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q02",
+      "expected_doc_id": "doc-001",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-001"
+      ],
+      "answer": "No, a single structuring indicator does not prove suspicious activity. According to the guidance, \"A single indicator does not prove suspicious activity.\" [doc-001] Instead, analysts should assess the combined value and pattern of payments, and compare the activity with the account profile, expected use, and available source-of-funds information before deciding whether to escalate or request more information. [doc-001]",
+      "input_tokens": 260,
+      "output_tokens": 85,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q03",
+      "expected_doc_id": "doc-002",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-002"
+      ],
+      "answer": "No, a high-risk payment corridor is not sufficient on its own to justify escalation. According to the guidance, \"A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation.\" [doc-002]\n\nThe document emphasises that analysts should consider legitimate explanations such as supplier payments, family support, relocation, or established cross-border business relationships, and evidence should be recorded for both risk indicators and plausible legitimate explanations before making an escalation decision. [doc-002]",
+      "input_tokens": 278,
+      "output_tokens": 114,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q04",
+      "expected_doc_id": "doc-003",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-003"
+      ],
+      "answer": "According to the Standard Alert Investigation Procedure, previous alert outcomes should be treated only as supporting evidence when comparing a case with previously reviewed alerts [doc-003]. \n\nThe procedure emphasises that while analysts should search relevant company guidance and compare the current case with previous alerts, they must not allow previous outcomes to determine the investigation outcome. The assigned analyst must make and record their own final decision based on the facts of the current alert, rather than being influenced by how similar alerts were previously resolved [doc-003].",
+      "input_tokens": 260,
+      "output_tokens": 106,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q05",
+      "expected_doc_id": "doc-003",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-003"
+      ],
+      "answer": "According to the Standard Alert Investigation Procedure, the assigned analyst must make and record the final alert decision [doc-003]. An AI recommendation may support the review, but the final decision responsibility rests with the assigned analyst [doc-003].",
+      "input_tokens": 260,
+      "output_tokens": 52,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q06",
+      "expected_doc_id": "doc-004",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-004"
+      ],
+      "answer": "According to the context provided, analysts must not disclose the following internal information when requesting evidence [doc-004]:\n\n1. Internal monitoring rules\n2. Risk thresholds\n3. Whether a suspicious activity report is being considered\n\n[doc-004]",
+      "input_tokens": 261,
+      "output_tokens": 56,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q07",
+      "expected_doc_id": "doc-005",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-005",
+        "doc-008"
+      ],
+      "answer": "No, a name-only sanctions match is not enough to confirm a true match. According to the guidance, \"A name-only match is not sufficient to confirm a true match, particularly where the name is common.\" [doc-005]\n\nThe case example illustrates this principle: an international payment triggered a sanctions screening alert based on a name resemblance to a listed individual, but the analyst found that the counterparty had different date of birth, nationality, address, and middle name. The alert was closed as a false positive caused by a common-name match. [doc-008]\n\nAnalysts must compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country to make a proper determination. [doc-005]",
+      "input_tokens": 426,
+      "output_tokens": 178,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q08",
+      "expected_doc_id": "doc-005",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-005",
+        "doc-008"
+      ],
+      "answer": "According to [doc-005], when sanctions review finds material identifier matches, ownership or control concerns, or links to a sanctioned country, these \"must be escalated immediately to the sanctions team.\"",
+      "input_tokens": 428,
+      "output_tokens": 43,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q09",
+      "expected_doc_id": "doc-006",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-006"
+      ],
+      "answer": "The nominated financial crime team decides whether an external suspicious activity report is required [doc-006]. The investigating analyst and the AI assistant do not submit one automatically [doc-006].",
+      "input_tokens": 263,
+      "output_tokens": 39,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q10",
+      "expected_doc_id": "doc-007",
+      "passed": false,
+      "refused": true,
+      "sources": [],
+      "answer": null,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "stop_reason": "insufficient_guidance"
+    },
+    {
+      "id": "q11",
+      "expected_doc_id": "doc-007",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-007"
+      ],
+      "answer": "According to the document, the following differences would require further investigation in another batch-payment alert [doc-007]:\n\n1. New counterparties (rather than established employees)\n2. Irregular timing (rather than the established monthly pattern)\n3. Unexplained value changes (rather than similar-value transfers)\n\nThe document specifically states: \"This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.\" [doc-007]",
+      "input_tokens": 269,
+      "output_tokens": 115,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q12",
+      "expected_doc_id": "doc-008",
+      "passed": true,
+      "refused": false,
+      "sources": [
+        "doc-005",
+        "doc-008"
+      ],
+      "answer": "No, future sanctions alerts involving a previously cleared name should not skip another check. [doc-008] states: \"Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.\"\n\nEven though a name previously resulted in a false positive determination, each new alert must still be reviewed against current sanctions records, as the lists and identifying information are subject to change over time.",
+      "input_tokens": 425,
+      "output_tokens": 89,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q13",
+      "expected_doc_id": null,
+      "passed": true,
+      "refused": true,
+      "sources": [
+        "doc-001"
+      ],
+      "answer": "The provided documents do not answer that question.\n\n[doc-001] explains that structuring involves splitting funds to avoid monitoring thresholds but does not specify what exact monetary threshold triggers a structuring alert. The guidance indicates that analysts should assess patterns rather than focusing on individual payment amounts in isolation.",
+      "input_tokens": 260,
+      "output_tokens": 63,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q14",
+      "expected_doc_id": null,
+      "passed": true,
+      "refused": true,
+      "sources": [
+        "doc-006"
+      ],
+      "answer": "The provided documents do not answer that question.\n\nThe document provided outlines the escalation process and internal procedures for handling suspicious activity, but does not specify a timeframe in hours for filing an external suspicious activity report [doc-006].",
+      "input_tokens": 265,
+      "output_tokens": 51,
+      "stop_reason": "end_turn"
+    },
+    {
+      "id": "q15",
+      "expected_doc_id": null,
+      "passed": true,
+      "refused": true,
+      "sources": [],
+      "answer": null,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "stop_reason": "insufficient_guidance"
+    },
+    {
+      "id": "q16",
+      "expected_doc_id": null,
+      "passed": true,
+      "refused": true,
+      "sources": [
+        "doc-005"
+      ],
+      "answer": "The provided documents do not answer that question.",
+      "input_tokens": 267,
+      "output_tokens": 12,
+      "stop_reason": "end_turn"
+    }
+  ]
+}

@@ -1,9 +1,12 @@
 import json
 from pathlib import Path
 import statistics
+import argparse
+import os
 
 from eval_tools import keywords_present
 from grounding import if_refusal
+from dotenv import load_dotenv
 
 
 def load_baseline() -> dict:
@@ -63,6 +66,8 @@ def run(questions: list[dict], ranked: list[list[dict]], floor: float) -> dict:
             }
         )
 
+    print(f"Evaluating {q['id']}...", flush=True)
+
     answerable = [r for r in records if r["expected_doc_id"] is not None]
     unanswerable = [r for r in records if r["expected_doc_id"] is None]
 
@@ -88,3 +93,51 @@ def run(questions: list[dict], ranked: list[list[dict]], floor: float) -> dict:
         "avg_input_tokens": round(input_tokens / model_calls) if model_calls else 0,
         "answers": records,
     }
+
+
+def main() -> None:
+    load_dotenv()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--floor",
+        type=float,
+        default=float(os.getenv("RELEVANCE_FLOOR", "0.35")),
+    )
+    args = parser.parse_args()
+
+    baseline = load_baseline()
+    print(
+        f"Evaluating {len(baseline['questions'])} questions "
+        f"with relevance floor {args.floor}.",
+        flush=True,
+    )
+
+    results = run(
+        baseline["questions"],
+        baseline["ranked_results"],
+        args.floor,
+    )
+
+    summary = {key: value for key, value in results.items() if key != "answers"}
+    print(json.dumps(summary, indent=2))
+
+    report = {
+        "strategy": baseline["strategy"],
+        "embedding_model": baseline["embedding_model"],
+        "answer_model": os.getenv("ANTHROPIC_MODEL"),
+        "floor": args.floor,
+        "questions": baseline["questions"],
+        **results,
+    }
+
+    Path("eval_results").mkdir(exist_ok=True)
+    Path("eval_results/answers_baseline.json").write_text(
+        json.dumps(report, indent=2),
+        encoding="utf-8",
+    )
+    print("\nSaved eval_results/answers_baseline.json")
+
+
+if __name__ == "__main__":
+    main()
