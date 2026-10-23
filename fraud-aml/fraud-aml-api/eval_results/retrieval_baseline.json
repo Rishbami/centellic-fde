@@ -1,0 +1,717 @@
+{
+  "strategy": "whole_document",
+  "embedding_model": "voyage-3-lite",
+  "indexed_documents": 8,
+  "requested_top_k": 5,
+  "questions": [
+    {
+      "id": "q01",
+      "question": "When investigating possible structuring, should payments be assessed individually or together?",
+      "doc_id": "doc-001",
+      "evidence": "Analysts should assess the combined value and pattern rather than treating each payment in isolation.",
+      "keywords": [
+        "combined|together|aggregate*",
+        "pattern*"
+      ],
+      "kind": "procedure"
+    },
+    {
+      "id": "q02",
+      "question": "Does a single structuring indicator prove suspicious activity?",
+      "doc_id": "doc-001",
+      "evidence": "A single indicator does not prove suspicious activity.",
+      "keywords": [
+        "single",
+        "not|no|cannot|insufficient",
+        "prove|proof"
+      ],
+      "kind": "negation"
+    },
+    {
+      "id": "q03",
+      "question": "Is a high-risk payment corridor sufficient on its own to justify escalation?",
+      "doc_id": "doc-002",
+      "evidence": "A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation.",
+      "keywords": [
+        "corridor",
+        "not|no|cannot|insufficient",
+        "alone|sole|own"
+      ],
+      "kind": "negation"
+    },
+    {
+      "id": "q04",
+      "question": "How should previous alert outcomes influence a new investigation?",
+      "doc_id": "doc-003",
+      "evidence": "Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence.",
+      "keywords": [
+        "support*",
+        "evidence"
+      ],
+      "kind": "historical_evidence"
+    },
+    {
+      "id": "q05",
+      "question": "Who must make and record the final alert decision?",
+      "doc_id": "doc-003",
+      "evidence": "An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+      "keywords": [
+        "analyst",
+        "final",
+        "record*|document*"
+      ],
+      "kind": "decision_authority"
+    },
+    {
+      "id": "q06",
+      "question": "What internal information must analysts avoid disclosing when requesting evidence?",
+      "doc_id": "doc-004",
+      "evidence": "Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered.",
+      "keywords": [
+        "monitoring",
+        "threshold*",
+        "report*|SAR"
+      ],
+      "kind": "disclosure_restriction"
+    },
+    {
+      "id": "q07",
+      "question": "Is a name-only sanctions match enough to confirm a true match?",
+      "doc_id": "doc-005",
+      "evidence": "A name-only match is not sufficient to confirm a true match, particularly where the name is common.",
+      "keywords": [
+        "name",
+        "not|no|insufficient|cannot"
+      ],
+      "kind": "negation"
+    },
+    {
+      "id": "q08",
+      "question": "What should happen when sanctions review finds material identifier matches or ownership/control concerns?",
+      "doc_id": "doc-005",
+      "evidence": "Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team.",
+      "keywords": [
+        "escalat*",
+        "immediat*",
+        "sanctions",
+        "team"
+      ],
+      "kind": "escalation_procedure"
+    },
+    {
+      "id": "q09",
+      "question": "Who decides whether an external suspicious activity report is required?",
+      "doc_id": "doc-006",
+      "evidence": "The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically.",
+      "keywords": [
+        "nominated",
+        "team"
+      ],
+      "kind": "decision_authority"
+    },
+    {
+      "id": "q10",
+      "question": "What evidence supported the payroll case being treated as a false positive?",
+      "doc_id": "doc-007",
+      "evidence": "Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year.",
+      "keywords": [
+        "employee*",
+        "payroll",
+        "month*",
+        "year"
+      ],
+      "kind": "case_evidence"
+    },
+    {
+      "id": "q11",
+      "question": "What differences would require further investigation in another batch-payment alert?",
+      "doc_id": "doc-007",
+      "evidence": "This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+      "keywords": [
+        "new|unfamiliar",
+        "counterpart*",
+        "timing",
+        "value|amount*"
+      ],
+      "kind": "exception"
+    },
+    {
+      "id": "q12",
+      "question": "Can future sanctions alerts involving a previously cleared name skip another check?",
+      "doc_id": "doc-008",
+      "evidence": "Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+      "keywords": [
+        "check*|review*",
+        "current|up-to-date",
+        "change*"
+      ],
+      "kind": "exception"
+    },
+    {
+      "id": "q13",
+      "question": "What exact monetary threshold triggers a structuring alert?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q14",
+      "question": "Within how many hours must an external suspicious activity report be filed?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q15",
+      "question": "Have the payroll records for alert ALT-048 been independently verified?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q16",
+      "question": "Which sanctions list provider does the company use?",
+      "doc_id": null,
+      "evidence": null,
+      "keywords": [],
+      "kind": "unanswerable"
+    }
+  ],
+  "scores": {
+    "recall@1": 0.917,
+    "recall@3": 1,
+    "recall@5": 1,
+    "mrr": 0.958,
+    "context_words@3": 352,
+    "top_score_answerable": 0.571,
+    "top_score_unanswerable": 0.504,
+    "recall@3_by_kind": {
+      "case_evidence": 1,
+      "decision_authority": 1,
+      "disclosure_restriction": 1,
+      "escalation_procedure": 1,
+      "exception": 1,
+      "historical_evidence": 1,
+      "negation": 1,
+      "procedure": 1
+    },
+    "missed@3": []
+  },
+  "ranked_results": [
+    [
+      {
+        "id": "doc-001",
+        "title": "Structuring and Rapid Movement Typology Guide",
+        "text": "Structuring is the deliberate splitting of funds into smaller payments to avoid monitoring thresholds or reduce scrutiny. Indicators include repeated transfers just below a threshold, several payments sent within a short period, use of multiple counterparties with no clear commercial reason, and funds leaving an account soon after they arrive. Analysts should assess the combined value and pattern rather than treating each payment in isolation. A new account, an unexplained increase in activity, or movement through several countries increases concern. A single indicator does not prove suspicious activity. The analyst should compare the activity with the account profile, expected use, and any available source-of-funds information before deciding whether to escalate or request more information.",
+        "score": 0.4919329285621643
+      },
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.2964363098144531
+      },
+      {
+        "id": "doc-002",
+        "title": "Unusual Payment Corridors and Counterparty Risk Guide",
+        "text": "An unusual payment corridor is one that does not match the customer's known location, business activity, or historic transaction pattern. Risk may be higher where funds pass through several jurisdictions, where the counterparty has no obvious connection to the account holder, or where payment descriptions are vague or inconsistent. Analysts should review the origin and destination countries, transaction amount, frequency, counterparty history, account balance, and the rule that triggered the alert. A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation. Legitimate explanations may include supplier payments, family support, relocation, or an established cross-border business relationship. Evidence should be recorded for both risk indicators and plausible legitimate explanations.",
+        "score": 0.26738882064819336
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.2647838592529297
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.21825414896011353
+      }
+    ],
+    [
+      {
+        "id": "doc-001",
+        "title": "Structuring and Rapid Movement Typology Guide",
+        "text": "Structuring is the deliberate splitting of funds into smaller payments to avoid monitoring thresholds or reduce scrutiny. Indicators include repeated transfers just below a threshold, several payments sent within a short period, use of multiple counterparties with no clear commercial reason, and funds leaving an account soon after they arrive. Analysts should assess the combined value and pattern rather than treating each payment in isolation. A new account, an unexplained increase in activity, or movement through several countries increases concern. A single indicator does not prove suspicious activity. The analyst should compare the activity with the account profile, expected use, and any available source-of-funds information before deciding whether to escalate or request more information.",
+        "score": 0.6634700298309326
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.3590881824493408
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.3588424324989319
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.3420901298522949
+      },
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.30757200717926025
+      }
+    ],
+    [
+      {
+        "id": "doc-002",
+        "title": "Unusual Payment Corridors and Counterparty Risk Guide",
+        "text": "An unusual payment corridor is one that does not match the customer's known location, business activity, or historic transaction pattern. Risk may be higher where funds pass through several jurisdictions, where the counterparty has no obvious connection to the account holder, or where payment descriptions are vague or inconsistent. Analysts should review the origin and destination countries, transaction amount, frequency, counterparty history, account balance, and the rule that triggered the alert. A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation. Legitimate explanations may include supplier payments, family support, relocation, or an established cross-border business relationship. Evidence should be recorded for both risk indicators and plausible legitimate explanations.",
+        "score": 0.6018176078796387
+      },
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.3847593069076538
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.33489036560058594
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.310687780380249
+      },
+      {
+        "id": "doc-001",
+        "title": "Structuring and Rapid Movement Typology Guide",
+        "text": "Structuring is the deliberate splitting of funds into smaller payments to avoid monitoring thresholds or reduce scrutiny. Indicators include repeated transfers just below a threshold, several payments sent within a short period, use of multiple counterparties with no clear commercial reason, and funds leaving an account soon after they arrive. Analysts should assess the combined value and pattern rather than treating each payment in isolation. A new account, an unexplained increase in activity, or movement through several countries increases concern. A single indicator does not prove suspicious activity. The analyst should compare the activity with the account profile, expected use, and any available source-of-funds information before deciding whether to escalate or request more information.",
+        "score": 0.3079491853713989
+      }
+    ],
+    [
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.6047630906105042
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.3991519808769226
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.3746168613433838
+      },
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.35422301292419434
+      },
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.3397334814071655
+      }
+    ],
+    [
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.4814988970756531
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.4547293186187744
+      },
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.3873859643936157
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.2921931743621826
+      },
+      {
+        "id": "doc-008",
+        "title": "False Positive Case Note: Common-Name Sanctions Match",
+        "text": "An international payment triggered a sanctions screening alert because the counterparty's name resembled a listed individual. The analyst compared the available identifiers and found that the counterparty had a different date of birth, nationality, address, and middle name. The payment corridor was consistent with the customer's established supplier activity, and invoices supported the commercial relationship. After authorised sanctions review, the alert was closed as a false positive caused by a common-name match. The decision was based on conflicting identifiers, not merely on the customer's explanation. Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+        "score": 0.21652722358703613
+      }
+    ],
+    [
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.5339277982711792
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.427640438079834
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.3285399079322815
+      },
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.30647605657577515
+      },
+      {
+        "id": "doc-002",
+        "title": "Unusual Payment Corridors and Counterparty Risk Guide",
+        "text": "An unusual payment corridor is one that does not match the customer's known location, business activity, or historic transaction pattern. Risk may be higher where funds pass through several jurisdictions, where the counterparty has no obvious connection to the account holder, or where payment descriptions are vague or inconsistent. Analysts should review the origin and destination countries, transaction amount, frequency, counterparty history, account balance, and the rule that triggered the alert. A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation. Legitimate explanations may include supplier payments, family support, relocation, or an established cross-border business relationship. Evidence should be recorded for both risk indicators and plausible legitimate explanations.",
+        "score": 0.23718225955963135
+      }
+    ],
+    [
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.6672003269195557
+      },
+      {
+        "id": "doc-008",
+        "title": "False Positive Case Note: Common-Name Sanctions Match",
+        "text": "An international payment triggered a sanctions screening alert because the counterparty's name resembled a listed individual. The analyst compared the available identifiers and found that the counterparty had a different date of birth, nationality, address, and middle name. The payment corridor was consistent with the customer's established supplier activity, and invoices supported the commercial relationship. After authorised sanctions review, the alert was closed as a false positive caused by a common-name match. The decision was based on conflicting identifiers, not merely on the customer's explanation. Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+        "score": 0.5824366211891174
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.3102845549583435
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.27842050790786743
+      },
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.23447942733764648
+      }
+    ],
+    [
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.6519010066986084
+      },
+      {
+        "id": "doc-008",
+        "title": "False Positive Case Note: Common-Name Sanctions Match",
+        "text": "An international payment triggered a sanctions screening alert because the counterparty's name resembled a listed individual. The analyst compared the available identifiers and found that the counterparty had a different date of birth, nationality, address, and middle name. The payment corridor was consistent with the customer's established supplier activity, and invoices supported the commercial relationship. After authorised sanctions review, the alert was closed as a false positive caused by a common-name match. The decision was based on conflicting identifiers, not merely on the customer's explanation. Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+        "score": 0.502349853515625
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.32390469312667847
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.31777477264404297
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.2714245319366455
+      }
+    ],
+    [
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.615038275718689
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.46330738067626953
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.4145745038986206
+      },
+      {
+        "id": "doc-001",
+        "title": "Structuring and Rapid Movement Typology Guide",
+        "text": "Structuring is the deliberate splitting of funds into smaller payments to avoid monitoring thresholds or reduce scrutiny. Indicators include repeated transfers just below a threshold, several payments sent within a short period, use of multiple counterparties with no clear commercial reason, and funds leaving an account soon after they arrive. Analysts should assess the combined value and pattern rather than treating each payment in isolation. A new account, an unexplained increase in activity, or movement through several countries increases concern. A single indicator does not prove suspicious activity. The analyst should compare the activity with the account profile, expected use, and any available source-of-funds information before deciding whether to escalate or request more information.",
+        "score": 0.34671980142593384
+      },
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.34001100063323975
+      }
+    ],
+    [
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.4523213505744934
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.2755832076072693
+      },
+      {
+        "id": "doc-008",
+        "title": "False Positive Case Note: Common-Name Sanctions Match",
+        "text": "An international payment triggered a sanctions screening alert because the counterparty's name resembled a listed individual. The analyst compared the available identifiers and found that the counterparty had a different date of birth, nationality, address, and middle name. The payment corridor was consistent with the customer's established supplier activity, and invoices supported the commercial relationship. After authorised sanctions review, the alert was closed as a false positive caused by a common-name match. The decision was based on conflicting identifiers, not merely on the customer's explanation. Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+        "score": 0.23460114002227783
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.21237581968307495
+      },
+      {
+        "id": "doc-002",
+        "title": "Unusual Payment Corridors and Counterparty Risk Guide",
+        "text": "An unusual payment corridor is one that does not match the customer's known location, business activity, or historic transaction pattern. Risk may be higher where funds pass through several jurisdictions, where the counterparty has no obvious connection to the account holder, or where payment descriptions are vague or inconsistent. Analysts should review the origin and destination countries, transaction amount, frequency, counterparty history, account balance, and the rule that triggered the alert. A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation. Legitimate explanations may include supplier payments, family support, relocation, or an established cross-border business relationship. Evidence should be recorded for both risk indicators and plausible legitimate explanations.",
+        "score": 0.19372451305389404
+      }
+    ],
+    [
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.5447697639465332
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.4496611952781677
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.4382389783859253
+      },
+      {
+        "id": "doc-002",
+        "title": "Unusual Payment Corridors and Counterparty Risk Guide",
+        "text": "An unusual payment corridor is one that does not match the customer's known location, business activity, or historic transaction pattern. Risk may be higher where funds pass through several jurisdictions, where the counterparty has no obvious connection to the account holder, or where payment descriptions are vague or inconsistent. Analysts should review the origin and destination countries, transaction amount, frequency, counterparty history, account balance, and the rule that triggered the alert. A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation. Legitimate explanations may include supplier payments, family support, relocation, or an established cross-border business relationship. Evidence should be recorded for both risk indicators and plausible legitimate explanations.",
+        "score": 0.4092363119125366
+      },
+      {
+        "id": "doc-001",
+        "title": "Structuring and Rapid Movement Typology Guide",
+        "text": "Structuring is the deliberate splitting of funds into smaller payments to avoid monitoring thresholds or reduce scrutiny. Indicators include repeated transfers just below a threshold, several payments sent within a short period, use of multiple counterparties with no clear commercial reason, and funds leaving an account soon after they arrive. Analysts should assess the combined value and pattern rather than treating each payment in isolation. A new account, an unexplained increase in activity, or movement through several countries increases concern. A single indicator does not prove suspicious activity. The analyst should compare the activity with the account profile, expected use, and any available source-of-funds information before deciding whether to escalate or request more information.",
+        "score": 0.3892136812210083
+      }
+    ],
+    [
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.5438151359558105
+      },
+      {
+        "id": "doc-008",
+        "title": "False Positive Case Note: Common-Name Sanctions Match",
+        "text": "An international payment triggered a sanctions screening alert because the counterparty's name resembled a listed individual. The analyst compared the available identifiers and found that the counterparty had a different date of birth, nationality, address, and middle name. The payment corridor was consistent with the customer's established supplier activity, and invoices supported the commercial relationship. After authorised sanctions review, the alert was closed as a false positive caused by a common-name match. The decision was based on conflicting identifiers, not merely on the customer's explanation. Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+        "score": 0.5349408388137817
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.3622159957885742
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.2936919927597046
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.29104793071746826
+      }
+    ],
+    [
+      {
+        "id": "doc-001",
+        "title": "Structuring and Rapid Movement Typology Guide",
+        "text": "Structuring is the deliberate splitting of funds into smaller payments to avoid monitoring thresholds or reduce scrutiny. Indicators include repeated transfers just below a threshold, several payments sent within a short period, use of multiple counterparties with no clear commercial reason, and funds leaving an account soon after they arrive. Analysts should assess the combined value and pattern rather than treating each payment in isolation. A new account, an unexplained increase in activity, or movement through several countries increases concern. A single indicator does not prove suspicious activity. The analyst should compare the activity with the account profile, expected use, and any available source-of-funds information before deciding whether to escalate or request more information.",
+        "score": 0.5605236887931824
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.42744410037994385
+      },
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.3589949607849121
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.3577863574028015
+      },
+      {
+        "id": "doc-002",
+        "title": "Unusual Payment Corridors and Counterparty Risk Guide",
+        "text": "An unusual payment corridor is one that does not match the customer's known location, business activity, or historic transaction pattern. Risk may be higher where funds pass through several jurisdictions, where the counterparty has no obvious connection to the account holder, or where payment descriptions are vague or inconsistent. Analysts should review the origin and destination countries, transaction amount, frequency, counterparty history, account balance, and the rule that triggered the alert. A high-risk corridor should prompt closer review but must not be used as the sole reason for escalation. Legitimate explanations may include supplier payments, family support, relocation, or an established cross-border business relationship. Evidence should be recorded for both risk indicators and plausible legitimate explanations.",
+        "score": 0.3088427782058716
+      }
+    ],
+    [
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.5510290265083313
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.384859561920166
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.3625119924545288
+      },
+      {
+        "id": "doc-001",
+        "title": "Structuring and Rapid Movement Typology Guide",
+        "text": "Structuring is the deliberate splitting of funds into smaller payments to avoid monitoring thresholds or reduce scrutiny. Indicators include repeated transfers just below a threshold, several payments sent within a short period, use of multiple counterparties with no clear commercial reason, and funds leaving an account soon after they arrive. Analysts should assess the combined value and pattern rather than treating each payment in isolation. A new account, an unexplained increase in activity, or movement through several countries increases concern. A single indicator does not prove suspicious activity. The analyst should compare the activity with the account profile, expected use, and any available source-of-funds information before deciding whether to escalate or request more information.",
+        "score": 0.3254457712173462
+      },
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.2738984227180481
+      }
+    ],
+    [
+      {
+        "id": "doc-007",
+        "title": "False Positive Case Note: Established Payroll Payments",
+        "text": "A business account triggered a high-volume payment alert after sending multiple similar-value transfers to domestic counterparties on the final working day of the month. The combined amount was materially higher than the alert threshold. Review showed that the counterparties were established employees, the payment references matched payroll records, and the same monthly pattern had occurred for more than a year. The account balance and business profile supported the activity, and no unusual international corridor or rapid onward movement was identified. The analyst recommended closure as a false positive and recorded payroll evidence as the reason. This outcome should not be applied automatically to other batch-payment alerts; new counterparties, irregular timing, or unexplained value changes would require further investigation.",
+        "score": 0.4080333709716797
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.39915168285369873
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.37323981523513794
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.3028978705406189
+      },
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.2975947856903076
+      }
+    ],
+    [
+      {
+        "id": "doc-005",
+        "title": "Sanctions Screening Alert Guidance",
+        "text": "A sanctions screening alert must be reviewed to determine whether it is a true match or a false positive. Compare the account holder or counterparty against the screened record using all available identifiers, including full name, aliases, date of birth, nationality, address, registration details, and country. A name-only match is not sufficient to confirm a true match, particularly where the name is common. Material identifier matches, ownership or control concerns, or links to a sanctioned country must be escalated immediately to the sanctions team. Analysts must not tell the customer that sanctions screening caused the review. They must also avoid releasing, rejecting, or otherwise acting on funds solely from an AI recommendation. Any restriction or reporting decision requires authorised human review under the applicable sanctions procedure.",
+        "score": 0.49762529134750366
+      },
+      {
+        "id": "doc-008",
+        "title": "False Positive Case Note: Common-Name Sanctions Match",
+        "text": "An international payment triggered a sanctions screening alert because the counterparty's name resembled a listed individual. The analyst compared the available identifiers and found that the counterparty had a different date of birth, nationality, address, and middle name. The payment corridor was consistent with the customer's established supplier activity, and invoices supported the commercial relationship. After authorised sanctions review, the alert was closed as a false positive caused by a common-name match. The decision was based on conflicting identifiers, not merely on the customer's explanation. Future alerts involving the same name should still be checked against the current sanctions record because list entries and identifying information can change.",
+        "score": 0.47016793489456177
+      },
+      {
+        "id": "doc-003",
+        "title": "Standard Alert Investigation Procedure",
+        "text": "Begin by confirming the alert details, including the triggered rule, amount, corridor, counterparty, risk score, and creation time. Review the linked account's status, country, balance, expected activity, and recent transaction history. Determine whether the alert reflects an isolated transaction or a wider pattern. Search relevant company guidance and compare the case with previously reviewed alerts, while treating previous outcomes only as supporting evidence. Record facts that support suspicion and facts that support a legitimate explanation. If key context is missing, request information rather than assuming intent. The available outcomes are escalate, request further information, or recommend closure as a likely false positive. An AI recommendation may support the review, but the assigned analyst must make and record the final decision.",
+        "score": 0.28603696823120117
+      },
+      {
+        "id": "doc-006",
+        "title": "Suspicious Activity Escalation and Reporting Steps",
+        "text": "Where an investigation identifies reasonable grounds for suspicion, the analyst should escalate the case to the nominated financial crime team. The case record should contain a concise chronology, relevant transaction amounts and dates, account and counterparty details, the triggered rules, supporting documents, and a clear explanation of why the activity is unusual or inconsistent with the account profile. Separate verified facts from assumptions and include any reasonable explanation considered. The nominated team decides whether an external suspicious activity report is required; the investigating analyst and the AI assistant do not submit one automatically. The customer must not be informed that a report is being considered or has been made. All decisions, including a decision not to report, must be documented with an audit trail.",
+        "score": 0.2129894495010376
+      },
+      {
+        "id": "doc-004",
+        "title": "Information Request and Evidence Checklist",
+        "text": "Request further information when the transaction may be legitimate but the available evidence is insufficient to reach a supported outcome. Depending on the alert, useful evidence may include the purpose of the payment, source of funds, invoices, contracts, proof of relationship to the counterparty, and an explanation for changes in account activity. Requests should be specific and proportionate to the identified risk. Analysts must not disclose internal monitoring rules, risk thresholds, or whether a suspicious activity report is being considered. When evidence is received, verify that names, dates, amounts, and counterparties match the observed activity. Missing, altered, contradictory, or implausible evidence should be documented and may justify escalation.",
+        "score": 0.19245171546936035
+      }
+    ]
+  ]
+}

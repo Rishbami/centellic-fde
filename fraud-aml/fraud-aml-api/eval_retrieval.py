@@ -1,6 +1,7 @@
 from eval_tools import contains_evidence
 import statistics
 import json
+import time
 
 from pathlib import Path
 
@@ -88,8 +89,15 @@ def main() -> None:
     top_k = min(max(K_VALUES), indexed_documents)
     ranked = []
 
-    for question in EVAL_SET:
-        print(f" Searching {question['id']}: {question['question']}", flush=True)
+    for number, question in enumerate(EVAL_SET, start=1):
+        if number > 1:
+            print("Waiting 22 seconds for Voyage's rate limit...", flush=True)
+            time.sleep(22)
+
+        print(
+            f"Searching {question['id']}: {question['question']}",
+            flush=True,
+        )
         hits = knowledge.search(question["question"], top_k=top_k)
         ranked.append(hits)
 
