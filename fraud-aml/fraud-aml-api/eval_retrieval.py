@@ -1,5 +1,11 @@
 from eval_tools import contains_evidence
 import statistics
+import json
+
+from pathlib import Path
+
+from eval_set import EVAL_SET
+from eval_tools import contains_evidence
 
 K_VALUES = (1, 3, 5)
 
@@ -67,3 +73,45 @@ def score_strategy(questions: list[dict], ranked: list[list[dict]]) -> dict:
             if rank is None or rank > 3
         ],
     }
+
+
+def main() -> None:
+    import knowledge_store as knowledge
+    from knowledge import EMBED_MODEL
+
+    indexed_documents = knowledge.count()
+    if indexed_documents == 0:
+        raise RuntimeError(
+            "THe guidance index is empty. RUn POST /knowledge/index first."
+        )
+
+    top_k = min(max(K_VALUES), indexed_documents)
+    ranked = []
+
+    for question in EVAL_SET:
+        print(f" Searching {question['id']}: {question['question']}", flush=True)
+        hits = knowledge.search(question["question"], top_k=top_k)
+        ranked.append(hits)
+
+    scores = score_strategy(EVAL_SET, ranked)
+
+    report = {
+        "strategy": "whole_document",
+        "embedding_model": EMBED_MODEL,
+        "indexed_documents": indexed_documents,
+        "requested_top_k": top_k,
+        "questions": EVAL_SET,
+        "scores": scores,
+        "ranked_results": ranked,
+    }
+
+    Path("eval_results").mkdir(exist_ok=True)
+    Path("eval_results/retrieval_baseline.json").write_text(
+        json.dumps(report, indent=2),
+        encoding="utf-8",
+    )
+    print("\nSaved eval_results/retrieval_baseline.json")
+
+
+if __name__ == "__main__":
+    main()
